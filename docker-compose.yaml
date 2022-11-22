@@ -10,8 +10,8 @@ services:
         ports:
             - "1234:80"
         volumes:
-            - ./conf/site.conf:/etc/nginx/http.d/default.conf
-            - ./src:/var/www/html
+            - ./backend/conf/site.conf:/etc/nginx/http.d/default.conf
+            - ./backend/src:/var/www/html
         networks:
             - acpSymfony
 
