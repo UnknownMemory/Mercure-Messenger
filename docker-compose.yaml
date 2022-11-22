@@ -36,6 +36,19 @@ services:
         networks:
             - acpSymfony
 
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: phpmyadmin_docker
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: db
+        networks:
+            - acpSymfony
+
     caddy:
         image: dunglas/mercure
         restart: unless-stopped
