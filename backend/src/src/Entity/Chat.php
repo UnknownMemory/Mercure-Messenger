@@ -18,6 +18,12 @@ class Chat
     #[ORM\OneToMany(mappedBy: 'chatId', targetEntity: Message::class)]
     private Collection $messages;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column]
+    private ?int $createur = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -54,6 +60,30 @@ class Chat
                 $message->setChatId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getCreateur(): ?int
+    {
+        return $this->createur;
+    }
+
+    public function setCreateur(int $createur): self
+    {
+        $this->createur = $createur;
 
         return $this;
     }

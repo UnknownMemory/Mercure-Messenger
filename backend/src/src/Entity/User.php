@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -20,6 +21,9 @@ class User
 
     #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Message::class, orphanRemoval: true)]
     private Collection $messages;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $password = null;
 
     public function __construct()
     {
@@ -51,25 +55,16 @@ class User
         return $this->messages;
     }
 
-    public function addMessage(Message $message): self
+    public function getPassword(): ?string
     {
-        if (!$this->messages->contains($message)) {
-            $this->messages->add($message);
-            $message->setUserId($this);
-        }
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }
 
-    public function removeMessage(Message $message): self
-    {
-        if ($this->messages->removeElement($message)) {
-            // set the owning side to null (unless already changed)
-            if ($message->getUserId() === $this) {
-                $message->setUserId(null);
-            }
-        }
-
-        return $this;
-    }
 }
