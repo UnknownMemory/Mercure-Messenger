@@ -1,0 +1,11 @@
+#formulaire {
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.57);
+    display: flex;
+    border-radius: 14%;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 31%;
+    margin-left: 33%;
+    margin-top: 7%;
+}
