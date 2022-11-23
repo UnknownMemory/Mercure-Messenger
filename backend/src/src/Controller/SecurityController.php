@@ -15,8 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class SecurityController extends AbstractController
 {
     #[Route('/api/inscription', name: 'app_register', methods: ['POST'])]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
-    {
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse {
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
         $user->setPassword($userPasswordHasher->hashPassword($user, $user->getPassword()));
         $entityManager->persist($user);
@@ -26,9 +25,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'user_login')]
-    public function login(string $appSecret, User $user): JsonResponse
-    {
-
+    public function login(string $appSecret, User $user): JsonResponse {
         if (null === $user) {
             return $this->json(
                 [
@@ -40,6 +37,13 @@ class SecurityController extends AbstractController
 
         $jwt = JWT::encode([
             'username' => $user->getUsername(),
+            'id' => $user->getId()
+        ],
+            $appSecret,
+                'HS256');
+
+        return $this->json([
+            'jwt' => $jwt
         ]);
     }
 }
