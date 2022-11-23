@@ -20,9 +20,6 @@ class Message
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\ManyToOne(inversedBy: 'messages')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $userId = null;
 
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
