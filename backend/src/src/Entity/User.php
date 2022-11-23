@@ -33,9 +33,13 @@ class User implements PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
     private ?string $password = null;
 
+    #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Chat::class, orphanRemoval: true)]
+    private Collection $chats;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
+        $this->chats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,6 +75,36 @@ class User implements PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Chat>
+     */
+    public function getChats(): Collection
+    {
+        return $this->chats;
+    }
+
+    public function addChat(Chat $chat): self
+    {
+        if (!$this->chats->contains($chat)) {
+            $this->chats->add($chat);
+            $chat->setCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChat(Chat $chat): self
+    {
+        if ($this->chats->removeElement($chat)) {
+            // set the owning side to null (unless already changed)
+            if ($chat->getCreateur() === $this) {
+                $chat->setCreateur(null);
+            }
+        }
 
         return $this;
     }

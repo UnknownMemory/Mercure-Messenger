@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -16,9 +17,9 @@ use Symfony\Component\Serializer\Serializer;
 class ChatController extends AbstractController
 {
 
-    public function __construct(ChatRepository $chatRepository) {
+    public function __construct(ChatRepository $chatRepository, Security $security) {
         $this->chatRepository = $chatRepository;
-
+        $this->security = $security;
     }
 
     #[Route('/', name: 'app_all')]
@@ -33,7 +34,7 @@ class ChatController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $room->setCreateur($this->getUser()->getId());
+            $room->setCreateur($this->getUser());
             $this->chatRepository->save($room, true);
         }
 
@@ -45,9 +46,5 @@ class ChatController extends AbstractController
         return new JsonResponse($jsonContent);
     }
 
-    #[Route('/delete/{chat_id}', name: 'app_delete')]
-    public function deleteRoom(Request $request, int $chat_id) : JsonResponse {
-
-    }
 
 }

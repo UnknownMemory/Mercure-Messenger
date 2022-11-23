@@ -21,6 +21,10 @@ class Chat
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[ORM\ManyToOne(inversedBy: 'chats')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createur = null;
+
 
 
     public function __construct()
@@ -71,6 +75,18 @@ class Chat
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getCreateur(): ?User
+    {
+        return $this->createur;
+    }
+
+    public function setCreateur(?User $createur): self
+    {
+        $this->createur = $createur;
 
         return $this;
     }
