@@ -5,41 +5,36 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
-
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['name'], message: 'Cette utilisateur existe déjà')]
-class User implements PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom est obligatoire", unique: true)]
-    private ?string $name = null;
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $username = null;
 
-    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: Message::class, orphanRemoval: true)]
-    private Collection $messages;
+    #[ORM\Column]
+    private array $roles = [];
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Chat::class, orphanRemoval: true)]
-    private Collection $chats;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Message::class)]
+    private Collection $messages;
 
     public function __construct()
     {
         $this->messages = new ArrayCollection();
-        $this->chats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,27 +42,51 @@ class User implements PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUsername(): ?string
     {
-        return $this->name;
+        return $this->username;
     }
 
-    public function setName(string $name): self
+    public function setUsername(string $username): self
     {
-        $this->name = $name;
+        $this->username = $username;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Message>
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
      */
-    public function getMessages(): Collection
+    public function getUserIdentifier(): string
     {
-        return $this->messages;
+        return (string) $this->username;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -80,29 +99,38 @@ class User implements PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Chat>
+     * @see UserInterface
      */
-    public function getChats(): Collection
+    public function eraseCredentials()
     {
-        return $this->chats;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
-    public function addChat(Chat $chat): self
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
     {
-        if (!$this->chats->contains($chat)) {
-            $this->chats->add($chat);
-            $chat->setCreateur($this);
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeChat(Chat $chat): self
+    public function removeMessage(Message $message): self
     {
-        if ($this->chats->removeElement($chat)) {
+        if ($this->messages->removeElement($message)) {
             // set the owning side to null (unless already changed)
-            if ($chat->getCreateur() === $this) {
-                $chat->setCreateur(null);
+            if ($message->getUser() === $this) {
+                $message->setUser(null);
             }
         }
 
