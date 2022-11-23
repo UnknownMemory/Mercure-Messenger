@@ -25,5 +25,21 @@ class SecurityController extends AbstractController
         return new JsonResponse('Utilisateur enregistré avec succès', Response::HTTP_CREATED, [], true);
     }
 
+    #[Route('/login', name: 'user_login')]
+    public function login(string $appSecret, User $user): JsonResponse
+    {
 
+        if (null === $user) {
+            return $this->json(
+                [
+                    'message' => 'missing crendentials',
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+
+        $jwt = JWT::encode([
+            'username' => $user->getUsername(),
+        ]);
+    }
 }
