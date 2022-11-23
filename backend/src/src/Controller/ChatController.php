@@ -14,9 +14,9 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
+#[Route('/api/chat')]
 class ChatController extends AbstractController
 {
-
     public function __construct(ChatRepository $chatRepository, Security $security) {
         $this->chatRepository = $chatRepository;
         $this->security = $security;
