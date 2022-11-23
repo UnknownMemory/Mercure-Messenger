@@ -79,15 +79,4 @@ class Chat
         return $this;
     }
 
-    public function getCreateur(): ?User
-    {
-        return $this->createur;
-    }
-
-    public function setCreateur(?User $createur): self
-    {
-        $this->createur = $createur;
-
-        return $this;
-    }
 }
