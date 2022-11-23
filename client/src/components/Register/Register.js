@@ -11,15 +11,8 @@ const Register = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        // const formdata = new FormData();
-        // formdata.append('username', username);
-        // formdata.append('password', password);
-
         const response = await post('http://localhost:1234/api/inscription',  JSON.stringify({'username': username, 'password': password}));
-
-        if (status.current.ok) {
-            console.log(response)
-        }
+  
     }
 
     return (
