@@ -16,38 +16,38 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-// #[Route('/api/chat')]
-// class ChatController extends AbstractController
-// {
-//     public function __construct(ChatRepository $chatRepository, Security $security)
-//     {
-//         $this->chatRepository = $chatRepository;
-//         $this->security = $security;
-//     }
+#[Route('/api/chat')]
+class ChatController extends AbstractController
+{
+    public function __construct(ChatRepository $chatRepository, Security $security)
+    {
+        $this->chatRepository = $chatRepository;
+        $this->security = $security;
+    }
 
-//     #[Route('/', name: 'app_all')]
-//     public function index(): JsonResponse
-//     {
-//         return new JsonResponse(['allRooms' => $this->chatRepository->findAll()]);
-//     }
+    #[Route('/', name: 'app_all')]
+    public function index(): JsonResponse
+    {
+        return new JsonResponse(['allRooms' => $this->chatRepository->findAll()]);
+    }
 
-//     #[Route('/creation', name: 'app_creation', methods: ["GET", "POST"])]
-//     public function creationRooms(Request $request): Response
-//     {
-//         $room = new Chat();
-//         $form  = $this->createForm(RoomType::class, $room);
-//         $form->handleRequest($request);
+    #[Route('/creation', name: 'app_creation', methods: ["GET", "POST"])]
+    public function creationRooms(Request $request): Response
+    {
+        $room = new Chat();
+        $form  = $this->createForm(RoomType::class, $room);
+        $form->handleRequest($request);
 
-//         if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $room->setCreateur($this->getUser());
+            $this->chatRepository->save($room, true);
+        }
 
-//             $this->chatRepository->save($room, true);
-//         }
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
 
-//         $encoders = [new XmlEncoder(), new JsonEncoder()];
-//         $normalizers = [new ObjectNormalizer()];
-//         $serializer = new Serializer($normalizers, $encoders);
-
-//         $jsonContent = $serializer->serialize($room, 'json');
-//         return new JsonResponse($jsonContent);
-//     }
-// }
+        $jsonContent = $serializer->serialize($room, 'json');
+        return new JsonResponse($jsonContent);
+    }
+}

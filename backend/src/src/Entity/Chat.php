@@ -37,6 +37,7 @@ class Chat
         return $this->id;
     }
 
+
     /**
      * @return Collection<int, Message>
      */
@@ -79,4 +80,19 @@ class Chat
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
+    public function getCreateur(): ?User
+    {
+        return $this->createur;
+    }
+
+    /**
+     * @param User|null $createur
+     */
+    public function setCreateur(?User $createur): void
+    {
+        $this->createur = $createur;
+    }
 }
