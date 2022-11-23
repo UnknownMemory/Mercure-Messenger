@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use Firebase\JWT\JWT;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/api/inscription', name: 'app_register', methods: ['POST'])]
+    #[Route('/api/register', name: 'app_register', methods: ['POST'])]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
     {
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
@@ -22,10 +23,10 @@ class SecurityController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return new JsonResponse('Utilisateur enregistré avec succès', Response::HTTP_CREATED, [], true);
+        return new JsonResponse('Utilisateur enregistré avec succès', Response::HTTP_OK, [], true);
     }
 
-    #[Route('/login', name: 'user_login')]
+    #[Route('/api/login', name: 'user_login', methods: ['POST', 'GET'])]
     public function login(string $appSecret, User $user): JsonResponse
     {
 
@@ -38,8 +39,15 @@ class SecurityController extends AbstractController
             );
         }
 
-        $jwt = JWT::encode([
-            'username' => $user->getUsername(),
-        ]);
+        $jwt = JWT::encode(
+            [
+                'username' => $user->getUsername(),
+                'id' => $user->getId()
+            ],
+            $appSecret,
+            'HS256'
+        );
+
+        return new JsonResponse(['jwt' => $jwt]);
     }
 }

@@ -11,7 +11,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 
-class ApiBasicAuthenticator extends AbstractAuthenticator
+/* class ApiBasicAuthenticator extends AbstractAuthenticator
 {
     public function supports(Request $request): ?bool
     {
@@ -37,4 +37,4 @@ class ApiBasicAuthenticator extends AbstractAuthenticator
     {
         return null;
     }
-}
+} */
