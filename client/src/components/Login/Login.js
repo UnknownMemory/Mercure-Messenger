@@ -3,9 +3,9 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 import useFetch from "../../hooks/useFetch";
-import "./register.css"
+import "./Login.css"
 
-const Register = () => {
+const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
@@ -13,7 +13,10 @@ const Register = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        const response = await post('/api/register',  JSON.stringify({'username': username, 'password': password}));
+        const body =  JSON.stringify({'username': username, 'password': password});
+        const headers = {'Content-Type': 'application/json'}
+        
+        const response = await post('/api/login_check', body, headers);
 
         if(status.current.ok){
             console.log(response)
@@ -22,7 +25,7 @@ const Register = () => {
 
     return (
         <React.Fragment>
-            <h1 className="d-flex justify-content-center">Register</h1>
+            <h1 className="d-flex justify-content-center">Login</h1>
             <Form onSubmit={onSubmit} id="formulaire">
                 <Form.Group className="mt-3">
                     <Form.Label>Username</Form.Label>   
@@ -42,4 +45,4 @@ const Register = () => {
 
 
 
-export default Register;
+export default Login;
