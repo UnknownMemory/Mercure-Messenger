@@ -10,6 +10,8 @@ import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import { isLoggedLoader } from './loaders/isLoggedLoader';
 
+import Container from 'react-bootstrap/Container';
+
 
 const router = createBrowserRouter([
   {
@@ -31,7 +33,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <Container>
+      <RouterProvider router={router}/>
+    </Container>
   </React.StrictMode>
 );
 

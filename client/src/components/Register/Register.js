@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -21,19 +21,22 @@ const Register = () => {
     }
 
     return (
-        <Form onSubmit={onSubmit} id="formulaire">
-            <Form.Group className="mt-3">
-                <Form.Label>Username</Form.Label>   
-                <Form.Control type="text" name="username" onChange={(e) => setUsername(e.currentTarget.value)} />
-            </Form.Group>
-            <Form.Group className="mt-3">
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" name="password" onChange={(e) => setPassword(e.currentTarget.value)}/>
-            </Form.Group>
-            <div className="mt-3 mb-3">
-                <Button variant="primary" type="submit">S'inscrire</Button>
-            </div>
-        </Form>
+        <React.Fragment>
+            <h1 className="d-flex justify-content-center">Register</h1>
+            <Form onSubmit={onSubmit} id="formulaire">
+                <Form.Group className="mt-3">
+                    <Form.Label>Username</Form.Label>   
+                    <Form.Control type="text" name="username" onChange={(e) => setUsername(e.currentTarget.value)} />
+                </Form.Group>
+                <Form.Group className="mt-3">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="password" name="password" onChange={(e) => setPassword(e.currentTarget.value)}/>
+                </Form.Group>
+                <div className="mt-3 mb-3">
+                    <Button variant="primary" type="submit">S'inscrire</Button>
+                </div>
+            </Form>
+        </React.Fragment>
     );
 }
 
