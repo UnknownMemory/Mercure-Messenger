@@ -5,9 +5,13 @@ namespace App\Entity;
 use App\Repository\ChatRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ChatRepository::class)]
+#[UniqueEntity(fields: ['nom'], message: 'Ce groupe existe déjà')]
 class Chat
 {
     #[ORM\Id]
@@ -18,12 +22,15 @@ class Chat
     #[ORM\OneToMany(mappedBy: 'chatId', targetEntity: Message::class)]
     private Collection $messages;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $nom = null;
 
     #[ORM\ManyToOne(inversedBy: 'chats')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'chats')]
+    private ?User $participant = null;
 
 
 
@@ -94,5 +101,17 @@ class Chat
     public function setCreateur(?User $createur): void
     {
         $this->createur = $createur;
+    }
+
+    public function getParticipant(): ?User
+    {
+        return $this->participant;
+    }
+
+    public function setParticipant(?User $participant): self
+    {
+        $this->participant = $participant;
+
+        return $this;
     }
 }
