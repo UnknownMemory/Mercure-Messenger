@@ -13,18 +13,20 @@ const Register = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        const response = await post('/api/register',  JSON.stringify({'username': username, 'password': password}));
 
-        const response = await post('http://localhost:1234/api/inscription',  JSON.stringify({'username': username, 'password': password}));
-  
+        if(status.current.ok){
+            console.log(response)
+        }
     }
 
     return (
         <Form onSubmit={onSubmit} id="formulaire">
-            <Form.Group classname="mt-3">
+            <Form.Group className="mt-3">
                 <Form.Label>Username</Form.Label>   
                 <Form.Control type="text" name="username" onChange={(e) => setUsername(e.currentTarget.value)} />
             </Form.Group>
-            <Form.Group classname="mt-3">
+            <Form.Group className="mt-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" name="password" onChange={(e) => setPassword(e.currentTarget.value)}/>
             </Form.Group>

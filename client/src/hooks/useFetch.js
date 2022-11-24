@@ -1,6 +1,8 @@
 import {useState, useRef} from 'react';
 
 const useFetch = () => {
+    const BASE_URL = "http://localhost:1234"
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const status = useRef(null);
@@ -9,7 +11,7 @@ const useFetch = () => {
         setError(null);
         setIsLoading(true);
         try {
-            const res = await fetch(url, {body, headers: headers, method: method});
+            const res = await fetch(BASE_URL+url, {body, headers: headers, method: method});
             const data = await res.json();
             status.current = res;
             return data;
