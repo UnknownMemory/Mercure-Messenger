@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './index.css';
 import App from './App';
 import Register from './components/Register/Register';
-import reportWebVitals from './reportWebVitals';
+import Login from './components/Login/Login';
 import { isLoggedLoader } from './loaders/isLoggedLoader';
 
 
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/login',
+    element: <Login />
   }
 ]);
 
