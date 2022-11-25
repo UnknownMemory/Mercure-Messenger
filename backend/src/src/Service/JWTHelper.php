@@ -12,7 +12,7 @@ private string $appSecret;
 
     public function __construct()
     {
-        $this->appSecret = "ighfùsjghfmkdsjhlgfnhkmgfsm,gfhghgfdh";
+        $this->appSecret = "Ae5I//FZ79GhkoRF";
     }
 
     public function buildJWT(UserInterface $user): string
