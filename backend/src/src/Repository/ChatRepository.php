@@ -40,6 +40,8 @@ class ChatRepository extends ServiceEntityRepository
         }
     }
 
+    
+
     public function findAllByUser(User $user)
     {
         return $this->createQueryBuilder('u')
@@ -50,7 +52,14 @@ class ChatRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findEmptyRooms()
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.participant = :NULL')
+            ->getQuery()
+            ->getResult();
 
+    }
 
     //    /**
     //     * @return Chat[] Returns an array of Chat objects
