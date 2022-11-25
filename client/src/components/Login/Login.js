@@ -16,7 +16,7 @@ const Login = () => {
         const body =  JSON.stringify({'username': username, 'password': password});
         const headers = {'Content-Type': 'application/json'}
         
-        const response = await post('/api/login_check', body, headers);
+        const response = await post('/api/login', body, headers);
 
         if(status.current.ok){
             console.log(response)
@@ -36,7 +36,7 @@ const Login = () => {
                     <Form.Control type="password" name="password" onChange={(e) => setPassword(e.currentTarget.value)}/>
                 </Form.Group>
                 <div className="mt-3 mb-3">
-                    <Button variant="primary" type="submit">S'inscrire</Button>
+                    <Button variant="primary" type="submit">Connexion</Button>
                 </div>
             </Form>
         </React.Fragment>
