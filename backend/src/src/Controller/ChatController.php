@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Chat;
 use App\Form\RoomType;
 use App\Repository\ChatRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,24 +18,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/api/chat')]
 class ChatController extends AbstractController
 {
-    public function __construct(ChatRepository $chatRepository, Security $security)
+    public function __construct(ChatRepository $chatRepository, Security $security, UserRepository $userRepository)
     {
         $this->chatRepository = $chatRepository;
         $this->security = $security;
+        $this->userRepository = $userRepository;
     }
 
-    #[Route('/', name: 'all_room')]
+    #[Route('/mesChats', name: 'my_room')]
     #[IsGranted('ROLE_USER', message: 'Vous devez être connecter pour accéder aux tchats rooms')]
-    public function index(SerializerInterface $serializerInterface): JsonResponse
+    public function index(SerializerInterface $serializerInterface): JsonResponse {
+        $chatList = $this->chatRepository->findByUserChats($this->getUser());
 
-    {
-        $myRooms =  $this->chatRepository->findAllByUser($this->getUser());
-        if ($myRooms == null) {
-            return new JsonResponse('Aucune chat room', Response::HTTP_NO_CONTENT, [], true);
-        } else {
-            $data = $serializerInterface->serialize($myRooms, 'json');
-            return new JsonResponse($data, Response::HTTP_OK, [], true);
-        }
+        $jsonChatList  = $serializerInterface->serialize($chatList, 'json', ['groups' => 'getChat']);
+        return new JsonResponse($jsonChatList, Response::HTTP_OK, [],true);
+
     }
 
     #[Route('/creation', name: 'create_room', methods: ["GET", "POST"])]

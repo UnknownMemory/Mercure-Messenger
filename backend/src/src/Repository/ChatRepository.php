@@ -40,40 +40,43 @@ class ChatRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllByUser(User $user)
-    {
+    public function findAllByParticipantEqualsNull() {
         return $this->createQueryBuilder('u')
-            ->orWhere('u.createur = :user')
-            ->orWhere('u.participant = :user')
-            ->setParameter('user', $user)
+            ->andWhere('u.participant = :null')
             ->getQuery()
             ->getResult();
     }
 
+    public function findByUserChats(User $user) {
+        return $this->createQueryBuilder('u')
+            ->orWhere('u.participant = :user')
+            ->orWhere('u.createur = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+//    /**
+//     * @return Chat[] Returns an array of Chat objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('c')
+//            ->andWhere('c.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('c.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-
-    //    /**
-    //     * @return Chat[] Returns an array of Chat objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Chat
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+//    public function findOneBySomeField($value): ?Chat
+//    {
+//        return $this->createQueryBuilder('c')
+//            ->andWhere('c.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }
