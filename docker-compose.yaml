@@ -66,19 +66,19 @@ services:
             MERCURE_EXTRA_DIRECTIVES:
                 cors_origins "http://localhost:3000"
                 cors_origins "http://localhost:8245"
-#                anonymous
-        # Uncomment the following line to enable the development mode
-#        command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+        command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
         ports:
             - "9090:80"
             - "443:443"
-#        volumes:
-#            - caddy_data:/data
-#            - caddy_config:/config
+        volumes:
+           - caddy_data:/data
+           - caddy_config:/config
         networks:
             - acpSymfony
 volumes:
     db-data:
+    caddy_data:
+    caddy_config:
 
 networks:
     acpSymfony:
