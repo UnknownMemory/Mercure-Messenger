@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Chat;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,6 +40,14 @@ class ChatRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllByUser(User $user) {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.participant = :user')
+            ->andWhere('u.createur = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Chat[] Returns an array of Chat objects
 //     */
