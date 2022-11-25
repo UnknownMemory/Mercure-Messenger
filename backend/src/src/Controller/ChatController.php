@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+
 #[Route('/api/chat')]
 class ChatController extends AbstractController
 {
@@ -26,51 +27,45 @@ class ChatController extends AbstractController
     }
 
 
-
+    /* Voir toutes les rooms ou je suis dedans */
     #[Route('/', name: 'my_room', methods: 'GET')]
     public function index(SerializerInterface $serializerInterface): JsonResponse
     {
-        if ($this->getUser()) {
-            $chatList = $this->chatRepository->findAllByUser($this->getUser());
+        $chatList = $this->chatRepository->findAllByUser($this->getUser());
 
-            $jsonChatList  = $serializerInterface->serialize($chatList, 'json', ['groups' => 'getChat']);
+        $jsonChatList  = $serializerInterface->serialize($chatList, 'json', ['groups' => 'getChat']);
 
-            dd($jsonChatList);
-            return new JsonResponse($jsonChatList, Response::HTTP_OK, [], true);
-        } else {
-            return new JsonResponse('Vous devez être connecté pour accéder à cette page', Response::HTTP_UNAUTHORIZED, [], true);
-        }
+        return new JsonResponse($jsonChatList, Response::HTTP_OK, [], true);
+    }
+
+    /* Voir toutes les rooms que je peux joins */
+    /* PAS ENCORE FONCTIONNELLE */
+    #[Route('/all_room', name: 'all_room', methods: 'GET')]
+    public function allRoom(SerializerInterface $serializerInterface): JsonResponse
+    {
+        $chatList = $this->chatRepository->findEmptyRooms($this->getUser());
+        dd($chatList);
+
+        $jsonChatList  = $serializerInterface->serialize($chatList, 'json');
+
+        return new JsonResponse($jsonChatList, Response::HTTP_OK, [], true);
     }
 
 
+    /* Créer une room */
     #[Route('/creation', name: 'create_room', methods: ["GET", "POST"])]
     public function creationRooms(): Response
     {
-        if ($this->getUser()) {
+        $room = new Chat();
+        $room->setCreateur($this->getUser());
+        $room->setLien("https://github.com/endroid/qr-code-bundle");
+        $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . uniqid());
+        $this->chatRepository->save($room, true);
 
-            $room = new Chat();
-
-            $room->setCreateur($this->getUser());
-            $room->setLien("https://github.com/endroid/qr-code-bundle");
-            $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . uniqid());
-            $this->chatRepository->save($room, true);
-
-            return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
-        }
-        return new JsonResponse('Vous devez être connecté pour créer une chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
+        return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
     }
 
-
-    #[Route('/{id}', name: 'one_room', methods: ['GET'])]
-    public function oneRoom(Chat $chat): JsonResponse
-    {
-        if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
-            return new JsonResponse(['room' => $chat->getMessages()]);
-        } else {
-            return new JsonResponse('Vous n\'avez pas accès à cette chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
-        }
-    }
-
+    /* Rejoindre une room */
     #[Route('/{id}/join', name: 'join_room', methods: ['GET'])]
     public function joinRoom(Chat $chat): JsonResponse
     {
@@ -83,6 +78,7 @@ class ChatController extends AbstractController
         }
     }
 
+    /* Quitter une room */
     #[Route('/{id}/leave', name: 'leave_room', methods: ['GET'])]
     public function leaveRoom(Chat $chat): JsonResponse
     {
@@ -92,6 +88,17 @@ class ChatController extends AbstractController
             $chat->setParticipant(null);
             $this->chatRepository->save($chat, true);
             return new JsonResponse('Vous avez quitté la chatRoom avec succès', Response::HTTP_OK, [], true);
+        }
+    }
+
+    /* Afficher une room */
+    #[Route('/{id}', name: 'one_room', methods: ['GET'])]
+    public function oneRoom(Chat $chat): JsonResponse
+    {
+        if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
+            return new JsonResponse(['room' => $chat->getMessages()]);
+        } else {
+            return new JsonResponse('Vous n\'avez pas accès à cette chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
         }
     }
 }

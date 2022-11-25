@@ -8,7 +8,7 @@ use Firebase\JWT\JWT;
 
 class JWTHelper
 {
-private string $appSecret;
+    private string $appSecret;
 
     public function __construct()
     {
