@@ -25,29 +25,27 @@ class ChatController extends AbstractController
         $this->security = $security;
     }
 
-    #[Route('/', name: 'app_all')]
+    #[Route('/', name: 'all_room')]
     public function index(): JsonResponse
     {
         return new JsonResponse(['allRooms' => $this->chatRepository->findAll()]);
     }
 
-    #[Route('/creation', name: 'app_creation', methods: ["GET", "POST"])]
-    public function creationRooms(Request $request): Response
+    #[Route('/creation', name: 'create_room', methods: ["GET", "POST"])]
+    public function creationRooms(): Response
     {
-        $room = new Chat();
-        $form  = $this->createForm(RoomType::class, $room);
-        $form->handleRequest($request);
+        if ($this->getUser()) {
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            $room = new Chat();
+
             $room->setCreateur($this->getUser());
+            $room->setLien("https://github.com/endroid/qr-code-bundle");
+            $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . rand(0, 1000));
             $this->chatRepository->save($room, true);
+
+
+            return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
         }
-
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
-
-        $jsonContent = $serializer->serialize($room, 'json');
-        return new JsonResponse($jsonContent);
+        return new JsonResponse('Vous devez être connecté pour créer une chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
     }
 }
