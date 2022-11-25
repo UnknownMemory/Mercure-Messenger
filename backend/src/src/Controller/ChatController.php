@@ -5,13 +5,14 @@ namespace App\Controller;
 use App\Entity\Chat;
 use App\Form\RoomType;
 use App\Repository\ChatRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\SerializerInterface;
 use  Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/api/chat')]
 class ChatController extends AbstractController
@@ -24,9 +25,16 @@ class ChatController extends AbstractController
 
     #[Route('/', name: 'all_room')]
     #[IsGranted('ROLE_USER', message: 'Vous devez être connecter pour accéder aux tchats rooms')]
-    public function index(): JsonResponse
+    public function index(SerializerInterface $serializerInterface): JsonResponse
+
     {
-        return new JsonResponse(['allRooms' => $this->chatRepository->findAll()]);
+        $myRooms =  $this->chatRepository->findAllByUser($this->getUser());
+        if ($myRooms == null) {
+            return new JsonResponse('Aucune chat room', Response::HTTP_NO_CONTENT, [], true);
+        } else {
+            $data = $serializerInterface->serialize($myRooms, 'json');
+            return new JsonResponse($data, Response::HTTP_OK, [], true);
+        }
     }
 
     #[Route('/creation', name: 'create_room', methods: ["GET", "POST"])]
@@ -39,7 +47,7 @@ class ChatController extends AbstractController
 
             $room->setCreateur($this->getUser());
             $room->setLien("https://github.com/endroid/qr-code-bundle");
-            $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . rand(0, 1000));
+            $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . uniqid());
             $this->chatRepository->save($room, true);
 
             return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
@@ -51,7 +59,7 @@ class ChatController extends AbstractController
     #[IsGranted('ROLE_USER', message: 'Vous devez être connecter pour accéder au tchat room')]
     public function oneRoom(Chat $chat): JsonResponse
     {
-        if ($this->getUser()->getId() === $chat->getCreateur()->getId() || $this->getUser() === $chat->getParticipant()) {
+        if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
             return new JsonResponse(['room' => $chat->getMessages()]);
         } else {
             return new JsonResponse('Vous n\'avez pas accès à cette chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
