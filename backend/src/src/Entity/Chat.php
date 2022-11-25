@@ -32,6 +32,9 @@ class Chat
     #[ORM\ManyToOne(inversedBy: 'chats')]
     private ?User $participant = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $lien = null;
+
 
 
     public function __construct()
@@ -111,6 +114,18 @@ class Chat
     public function setParticipant(?User $participant): self
     {
         $this->participant = $participant;
+
+        return $this;
+    }
+
+    public function getLien(): ?string
+    {
+        return $this->lien;
+    }
+
+    public function setLien(string $lien): self
+    {
+        $this->lien = $lien;
 
         return $this;
     }
