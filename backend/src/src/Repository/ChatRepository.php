@@ -40,10 +40,7 @@ class ChatRepository extends ServiceEntityRepository
         }
     }
 
-
-
-    public function findAllByUser(User $user)
-    {
+    public function findAllByUserChats(User $user) {
         return $this->createQueryBuilder('u')
             ->orWhere('u.createur = :user')
             ->orWhere('u.participant = :user')
@@ -52,8 +49,7 @@ class ChatRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findEmptyRooms(User $user)
-    {
+    public function findEmptyRooms(User $user) {
         return $this->createQueryBuilder('u')
             ->where('u.createur != :user')
             ->andWhere('u.participant = :NULL')
