@@ -27,7 +27,8 @@ class ChatController extends AbstractController
     }
 
     #[Route('/mesChats', name: 'my_room')]
-    public function index(SerializerInterface $serializerInterface): JsonResponse {
+    public function index(SerializerInterface $serializerInterface): JsonResponse
+    {
         $chatList = $this->chatRepository->findByUserChats($this->getUser());
 
         $jsonChatList  = $serializerInterface->serialize($chatList, 'json', ['groups' => 'getChat']);
@@ -36,14 +37,13 @@ class ChatController extends AbstractController
     }
 
     /* Voir toutes les rooms que je peux joins */
-    /* PAS ENCORE FONCTIONNELLE */
     #[Route('/all_room', name: 'all_room', methods: 'GET')]
     public function allRoom(SerializerInterface $serializerInterface): JsonResponse
     {
-        $chatList = $this->chatRepository->findEmptyRooms($this->getUser());
-        dd($chatList);
+        $chatList = $this->chatRepository->findEmptyRooms();
 
-        $jsonChatList  = $serializerInterface->serializerInterface($chatList, 'json');
+
+        $jsonChatList  = $serializerInterface->serialize($chatList, 'json');
 
         return new JsonResponse($jsonChatList, Response::HTTP_OK, [], true);
     }
