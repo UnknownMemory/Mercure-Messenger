@@ -9,6 +9,7 @@ import App from './App';
 import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import { isLoggedLoader } from './loaders/isLoggedLoader';
+import MesTchats from './components/MesTchats/MesTchats';
 
 import Container from 'react-bootstrap/Container';
 
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/Mes-tchats',
+    element: <MesTchats />
   }
 ]);
 

@@ -42,7 +42,6 @@ class ChatController extends AbstractController
     {
         $chatList = $this->chatRepository->findEmptyRooms();
 
-
         $jsonChatList  = $serializerInterface->serialize($chatList, 'json');
 
         return new JsonResponse($jsonChatList, Response::HTTP_OK, [], true);
