@@ -11,7 +11,7 @@ const useFetch = () => {
         setError(null);
         setIsLoading(true);
         try {
-            const res = await fetch(BASE_URL+url, {body, headers: headers, method: method});
+            const res = await fetch(BASE_URL+url, {body, headers: headers, method: method, mode: 'cors', credentials: 'include'});
             const data = await res.json();
             status.current = res;
             return data;
