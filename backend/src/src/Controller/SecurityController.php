@@ -3,18 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Service\JWTHelper;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\Mercure\Authorization;
+
 
 class SecurityController extends AbstractController
 {
@@ -31,10 +34,10 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/api/login', name: 'app_login', methods: ['POST'])]
-    public function login(Request $request, JWTHelper $jWTHelper, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher): JsonResponse
+    public function login(Request $request, JWTHelper $jWTHelper, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, Authorization $authorization): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        
+
         $user = $userRepository->findOneBy(['username' => $data['username']]);
         if (!$user) {
             throw new \Exception('User not found');
@@ -44,6 +47,13 @@ class SecurityController extends AbstractController
             throw new \Exception('Invalid password');
         }
 
-        return new JsonResponse(['token' => $jWTHelper->buildJWT($user)]);
+        /* Set cookie */
+
+        return new JsonResponse([
+            'JWT' =>  $token = $jWTHelper->buildJWT($user)
+        ], Response::HTTP_OK, [
+            /* $name, $value, $expire, $path, $domain, $secure, $httpOnly, $raw, $sameSite -> voir Cookie.php pour voir a quoi correspondent les champs */
+            'Cookie' => new Cookie('Authorization', $token, time() + 3600, '/', null, false, false, false, 'strict')
+        ]);
     }
 }

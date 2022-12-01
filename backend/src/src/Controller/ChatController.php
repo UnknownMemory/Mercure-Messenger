@@ -26,10 +26,10 @@ class ChatController extends AbstractController
         $this->userRepository = $userRepository;
     }
 
-    #[Route('/mesChats', name: 'my_room')]
+    #[Route('/mes-chats', name: 'my_room')]
     public function index(SerializerInterface $serializerInterface): JsonResponse
     {
-        $chatList = $this->chatRepository->findByUserChats($this->getUser());
+        $chatList = $this->chatRepository->findAllByUserChats($this->getUser());
 
         $jsonChatList  = $serializerInterface->serialize($chatList, 'json', ['groups' => 'getChat']);
 
