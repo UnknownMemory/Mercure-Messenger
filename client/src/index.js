@@ -1,45 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './index.css';
-import App from './App';
-import Register from './components/Register/Register';
-import Login from './components/Login/Login';
-import { isLoggedLoader } from './loaders/isLoggedLoader';
-import MesTchats from './components/MesTchats/MesTchats';
 
 import Container from 'react-bootstrap/Container';
-
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    loader: isLoggedLoader,
-    element: <App />,
-  },
-  {
-    path: '/register',
-    element: <Register />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/Mes-tchats',
-    element: <MesTchats />
-  }
-]);
-
+import UserProvider from './contexts/UserContext';
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Container>
-      <RouterProvider router={router}/>
+      <UserProvider>
+        <App />
+      </UserProvider>
     </Container>
   </React.StrictMode>
 );

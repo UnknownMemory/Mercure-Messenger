@@ -23,7 +23,7 @@ class JWTHelper
                 "publish" => ["*"],
                 "subscribe" => ["*"],
                 "payload" => [
-                    "username" => $user->getUserIdentifier()
+                    "username" => $user->getUserIdentifier(),
                 ]
             ]
         ];

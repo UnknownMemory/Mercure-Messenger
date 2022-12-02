@@ -1,7 +1,7 @@
 import {useState, useRef} from 'react';
 
 const useFetch = () => {
-    const BASE_URL = "http://localhost:1234"
+    const BASE_URL = "http://localhost:1234/api"
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);

@@ -1,25 +1,31 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 import useFetch from "../../hooks/useFetch";
+import { UserContext } from "../../contexts/UserContext";
 import "./Login.css"
+
 
 const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [user, setUser] = useContext(UserContext)
+    const navigate = useNavigate();
 
     const {post, status} = useFetch()
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        const body =  JSON.stringify({'username': username, 'password': password});
+        const body = JSON.stringify({'username': username, 'password': password});
         const headers = {'Content-Type': 'application/json'}
         
-        const response = await post('/api/login', body, headers);
+        const response = await post('/login', body, headers);
 
         if(status.current.ok){
-            console.log(response)
+            setUser(response.token);
+            return navigate('/');
         }
     }
 
