@@ -9,11 +9,11 @@ const Register = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
-    const {post, status} = useFetch()
+    const {post, status} = useFetch();
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        const response = await post('/api/register',  JSON.stringify({'username': username, 'password': password}));
+        const response = await post('/register',  JSON.stringify({'username': username, 'password': password}));
 
         if(status.current.ok){
             console.log(response)

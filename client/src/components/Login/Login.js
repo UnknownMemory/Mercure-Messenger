@@ -21,7 +21,7 @@ const Login = () => {
         const body = JSON.stringify({'username': username, 'password': password});
         const headers = {'Content-Type': 'application/json'}
         
-        const response = await post('/api/login', body, headers);
+        const response = await post('/login', body, headers);
 
         if(status.current.ok){
             setUser(response.token);
