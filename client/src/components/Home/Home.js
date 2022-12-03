@@ -9,7 +9,7 @@ const Home = () => {
     const [user, setUser] = useContext(UserContext)
 
     const getUsersList = async () => {
-        const res = await get('/users', null, {'Authorization': user})
+        const res = await get('/users', null, {'Authorization': user.token})
         
         if(status.current.ok){
             setUsersList(res.users)

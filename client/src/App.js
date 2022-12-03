@@ -8,9 +8,11 @@ import MesTchats from './components/MesTchats/MesTchats';
 import './App.css';
 import Home from "./components/Home/Home";
 import { UserContext } from "./contexts/UserContext";
+import useFetch from "./hooks/useFetch";
 
 function App() {
   const [user, setUser] = useContext(UserContext)
+  const {post, status} = useFetch();
 
   const isNotLoggedLoader = async () => {
     if(!user){

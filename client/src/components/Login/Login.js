@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -24,10 +24,16 @@ const Login = () => {
         const response = await post('/login', body, headers);
 
         if(status.current.ok){
-            setUser(response.token);
+            setUser({username: username, token: response.token});
+        }
+  
+    }
+
+    useEffect(() => {
+        if(user){
             return navigate('/');
         }
-    }
+    }, [user])
 
     return (
         <React.Fragment>

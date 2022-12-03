@@ -44,4 +44,5 @@ class SecurityController extends AbstractController
 
         return new JsonResponse(['token' => $jwtHelper->buildJWT($user)], Response::HTTP_OK, ['set-cookie' => $jwtHelper->buildMercureCookie($user)]);
     }
+    
 }

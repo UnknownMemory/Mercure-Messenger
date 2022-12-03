@@ -11,13 +11,11 @@ import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Container>
-      <UserProvider>
-        <App />
-      </UserProvider>
-    </Container>
-  </React.StrictMode>
+  <Container>
+    <UserProvider>
+      <App />
+    </UserProvider>
+  </Container>
 );
 
 // If you want to start measuring performance in your app, pass a function

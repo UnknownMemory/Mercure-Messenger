@@ -40,12 +40,12 @@ class JWTHelper
             'mercureAuth',
             $jwt,
             new \DateTime("120 hours"),
-            '/.well-known/mercure',
+            '/',
             'localhost',
             true,
             true,
             false,
-            Cookie::SAMESITE_STRICT
+            Cookie::SAMESITE_NONE
         );
     }
 }
