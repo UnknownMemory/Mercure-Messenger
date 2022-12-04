@@ -27,7 +27,7 @@ class JWTAuthenticator extends AbstractAuthenticator
         $jwt = str_replace('Bearer ', "", getallheaders()["Authorization"]);
 
         try {
-            $jwtDecoded = JWT::decode($jwt, new Key("Ae5I//FZ79GhkoRF", "HS256"));
+            $jwtDecoded = JWT::decode($jwt, new Key("Ae5I//FZ79GhkoRFRKio78*vrvELVc34v79Za", "HS256"));
             return new SelfValidatingPassport(new UserBadge($jwtDecoded->mercure->payload->username));
         } catch (\Exception $e) {
 
