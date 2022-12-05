@@ -13,7 +13,7 @@ class JWTHelper
 
     public function __construct()
     {
-        $this->appSecret = "Ae5I//FZ79GhkoRF";
+        $this->appSecret = "Ae5I//FZ79GhkoRFRKio78*vrvELVc34v79Za";
     }
 
     public function buildJWT(UserInterface $user): string
@@ -21,9 +21,10 @@ class JWTHelper
         $payload = [
             "mercure" => [
                 "publish" => ["*"],
-                "subscribe" => ["*"],
+                "subscribe" => ["http://localhost:1234/user/{$user->getId()}/{?topic}"],
                 "payload" => [
-                    "username" => $user->getUserIdentifier(),
+                    "username" => $user->getUsername(),
+                    "userId" => $user->getId()
                 ]
             ]
         ];
@@ -37,15 +38,15 @@ class JWTHelper
         $jwt = $this->buildJWT($user);
 
         return Cookie::create(
-            'mercureAuth',
+            'mercureAuthorization',
             $jwt,
             new \DateTime("120 hours"),
-            '/.well-known/mercure',
+            '/',
             'localhost',
             true,
             true,
             false,
-            Cookie::SAMESITE_STRICT
+            Cookie::SAMESITE_NONE
         );
     }
 }

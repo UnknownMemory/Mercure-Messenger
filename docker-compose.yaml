@@ -59,13 +59,15 @@ services:
         restart: unless-stopped
         container_name: mercure_docker
         environment:
-            # Uncomment the following line to disable HTTPS
             SERVER_NAME: ':80'
-            MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
-            MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
+            MERCURE_PUBLISHER_JWT_KEY: 'Ae5I//FZ79GhkoRFRKio78*vrvELVc34v79Za'
+            MERCURE_SUBSCRIBER_JWT_KEY: 'Ae5I//FZ79GhkoRFRKio78*vrvELVc34v79Za'
             MERCURE_EXTRA_DIRECTIVES:
+                cors_origins "http://localhost:3001"
                 cors_origins "http://localhost:3000"
                 cors_origins "http://localhost:8245"
+                cors_origins "http://localhost:1234"
+                
         command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
         ports:
             - "9090:80"
