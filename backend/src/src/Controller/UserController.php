@@ -18,7 +18,8 @@ class UserController extends AbstractController
 
         return $this->json(['users' => $userRepository->findAllExcept($user->getId())], Response::HTTP_OK, [], ['groups' => 'getChat']);
     }
-    
+
+    #[Route('api/test', name: 'show-users', methods: 'GET')]
     public function getAllUsers(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {
         $page = $request->get('page', 1);
