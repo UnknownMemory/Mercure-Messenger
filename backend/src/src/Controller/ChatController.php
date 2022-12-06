@@ -6,6 +6,7 @@ use App\Entity\Chat;
 use App\Form\RoomType;
 use App\Repository\ChatRepository;
 use App\Repository\UserRepository;
+use App\Repository\MessageRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -89,10 +90,12 @@ class ChatController extends AbstractController
 
     /* Afficher une room */
     #[Route('/{id}', name: 'one_room', methods: ['GET'])]
-    public function oneRoom(Chat $chat): JsonResponse
+    public function oneRoom(Chat $chat, MessageRepository $messageRepository, SerializerInterface $serializer): JsonResponse
     {
         if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
-            return new JsonResponse(['room' => $chat->getMessages()]);
+
+            $jsonMessage = $serializer->serialize($messageRepository->findAllMessageByChatId($chat->getId()), 'json', ['groups' => 'getMessage']);
+            return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
         } else {
             return new JsonResponse('Vous n\'avez pas accès à cette chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
         }

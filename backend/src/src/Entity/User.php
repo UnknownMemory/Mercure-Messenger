@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(["getChat"])]
+    #[Groups(["getChat", "getMessage"])]
     private ?string $username = null;
 
     #[ORM\Column]
