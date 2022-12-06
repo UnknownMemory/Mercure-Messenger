@@ -20,13 +20,12 @@ class UserController extends AbstractController
     }
 
     #[Route('api/test', name: 'show-users', methods: 'GET')]
-    public function getAllUsers(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse
-    {
+    public function getAllUsers(UserRepository $userRepository, SerializerInterface $serializer, Request $request): JsonResponse {
         $page = $request->get('page', 1);
         $limite = $request->get('limite', 3);
         $userList = $userRepository->findAllWithPagination($page, $limite);
 
-        $jsonUserList = $serializer->serialize($userList,'json',['groups' => 'getUsers']);
+        $jsonUserList = $serializer->serialize($userList,'json',['groups' => 'getChat']);
         return new JsonResponse($jsonUserList, Response::HTTP_OK, [], true);
     }
 }
