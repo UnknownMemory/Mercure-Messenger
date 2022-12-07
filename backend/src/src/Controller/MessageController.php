@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/chat')]
 class MessageController extends AbstractController
@@ -73,12 +74,19 @@ class MessageController extends AbstractController
             $message->setUser($this->getUser());
             $messagerepository->save($message, true);
 
-
-
-
             return new JsonResponse('Message envoyé avec succès', Response::HTTP_OK, [], true);
         } else {
             return new JsonResponse('Vous n\'avez pas accès à ce chat', Response::HTTP_FORBIDDEN, [], true);
         }
+    }
+
+    #[Route('api/test', name: 'show-message', methods: 'GET')]
+    public function getAllMessages(MessageRepository $messageRepository, SerializerInterface $serializer, Request $request): JsonResponse {
+        $page = $request->get('page', 1);
+        $limite = $request->get('limite', 3);
+        $messageList = $messageRepository->findAllWithPagination($page, $limite);
+
+        $jsonUserList = $serializer->serialize($messageList,'json',['groups' => 'getChat']);
+        return new JsonResponse($jsonUserList, Response::HTTP_OK, [], true);
     }
 }

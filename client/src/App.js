@@ -13,6 +13,7 @@ import "./App.css";
 import Home from "./components/Home/Home";
 import { UserContext } from "./contexts/UserContext";
 import useFetch from "./hooks/useFetch";
+import AllTchats from "./components/AllTchats/AllTchats";
 
 function App() {
   const [user, setUser] = useContext(UserContext);
@@ -41,6 +42,10 @@ function App() {
     {
       path: "/mes-tchats",
       element: <MesTchats />,
+    },
+    {
+      path: "/all-tchats",
+      element: <AllTchats />,
     },
   ]);
 
