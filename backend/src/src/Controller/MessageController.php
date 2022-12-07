@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/api/chat')]
 class MessageController extends AbstractController
 {
+
     #[Route('/message', name: 'app_message')]
     public function index(): Response
     {
@@ -46,35 +47,38 @@ class MessageController extends AbstractController
     public function indexTest(Chat $chat, HubInterface $hub, MessageRepository $messagerepository, Request $request): Response
     {
 
-        $getMessage = json_decode($request->getContent(), true);
+        if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
+            $getMessage = json_decode($request->getContent(), true);
 
 
-        $update = new Update(
-            [
-                "http://example.com/ping",
-                "http://localhost:8000/api/chat/{$chat->getId()}/?topic=" . urlencode("http://example.com/ping"),
+            $update = new Update(
+                [
+                    "http://example.com/ping",
+                    "http://localhost:8000/api/chat/{$chat->getId()}/?topic=" . urlencode("http://example.com/ping"),
 
-            ],
-            json_encode([
-                'name' => $this->getUser()->getUserName(),
-                'messages' => $getMessage['messages'],
+                ],
+                json_encode([
+                    'name' => $this->getUser()->getUserName(),
+                    'messages' => $getMessage['messages'],
 
-            ]),
-            true
+                ]),
+                true
+            );
+            $hub->publish($update);
 
-        );
-        $hub->publish($update);
-
-        $message = new Message();
-        $message->setChatId($chat);
-        $message->setContenu($getMessage['messages']);
-        $message->setDatePubli(new \DateTime());
-        $message->setUser($this->getUser());
-        $messagerepository->save($message, true);
-
+            $message = new Message();
+            $message->setChatId($chat);
+            $message->setContenu($getMessage['messages']);
+            $message->setDatePubli(new \DateTime());
+            $message->setUser($this->getUser());
+            $messagerepository->save($message, true);
 
 
 
-        return new JsonResponse('Message envoyé avec succès', Response::HTTP_OK, [], true);
+
+            return new JsonResponse('Message envoyé avec succès', Response::HTTP_OK, [], true);
+        } else {
+            return new JsonResponse('Vous n\'avez pas accès à ce chat', Response::HTTP_FORBIDDEN, [], true);
+        }
     }
 }
