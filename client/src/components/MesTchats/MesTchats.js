@@ -3,6 +3,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 
 import "./MesTchats.css"
+import Button from "react-bootstrap/Button";
 
 
 const MesTchats = () => {
@@ -12,7 +13,11 @@ const MesTchats = () => {
     const listTchat = nom.map((nameTchat, i) => {
         console.log(nameTchat);
         return (
-            <ListGroup.Item key={i}>{nameTchat}</ListGroup.Item>
+                <ListGroup.Item key={i}>{nameTchat}
+                    <div className="margin-left">
+                        <Button className="mb-3" variant="primary">Rejoindre</Button>
+                    </div>
+                </ListGroup.Item>
         );
     });
 
