@@ -53,7 +53,12 @@ class MessageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
+    public function findAllWithPagination($page, $limite) {
+        $qb = $this->createQueryBuilder('b')
+            ->setFirstResult(($page - 1) * $limite)
+            ->setMaxResults($limite);
+        return $qb->getQuery()->getResult();
+    }
 
     //    public function findByExampleField($value): array
     //    {

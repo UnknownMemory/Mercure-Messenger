@@ -10,7 +10,6 @@ import Home from "./components/Home/Home";
 import { UserContext } from "./contexts/UserContext";
 import useFetch from "./hooks/useFetch";
 import AllTchats from "./components/AllTchats/AllTchats";
-import CreationTchat from "./components/CreationTchat/CreationTchat";
 
 function App() {
   const [user, setUser] = useContext(UserContext)
@@ -43,11 +42,7 @@ function App() {
     {
       path: '/all-tchats',
       element: <AllTchats />
-    },
-    {
-      path: '/creation-tchat',
-      element: <CreationTchat />
-    },
+    }
   ]);
 
   return (
