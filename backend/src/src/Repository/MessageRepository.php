@@ -43,22 +43,23 @@ class MessageRepository extends ServiceEntityRepository
      * @return Message[] Returns an array of Message objects
      */
 
-    public function findAllMessageByChatId($value)
+    public function findAllMessageByChatId($value, $page, $limite)
     {
-        return $this->createQueryBuilder('m')
+        $qb = $this->createQueryBuilder('m')
             ->andWhere('m.chatId = :val')
             ->setParameter('val', $value)
             ->orderBy('m.datePubli', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findAllWithPagination($page, $limite) {
-        $qb = $this->createQueryBuilder('b')
             ->setFirstResult(($page - 1) * $limite)
             ->setMaxResults($limite);
         return $qb->getQuery()->getResult();
     }
+
+   // public function findAllWithPagination($page, $limite) {
+       // $qb = $this->createQueryBuilder('b')
+         //   ->setFirstResult(($page - 1) * $limite)
+       //     ->setMaxResults($limite);
+     //   return $qb->getQuery()->getResult();
+   // }
 
     //    public function findByExampleField($value): array
     //    {
