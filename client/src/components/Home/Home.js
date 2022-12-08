@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import useFetch from "../../hooks/useFetch";
-
+import Cookies from 'js-cookie';
 
 const Home = () => {
     const [usersList, setUsersList] = useState([])
     const {get, post, status} = useFetch()
     const [user, setUser] = useContext(UserContext)
+    const token = Cookies.get('auth')
 
     const getUsersList = async () => {
-        const res = await get('/users', null, {'Authorization': user.token})
+        const res = await get('/users', null, {'Authorization': token})
         
         if(status.current.ok){
             setUsersList(res.users)
@@ -17,7 +18,7 @@ const Home = () => {
     }
 
     const handleClick = async (userId) => {
-        const response = await post(`/ping/${userId}`, null, {'Authorization': user.token})
+        const response = await post(`/ping/${userId}`, null, {'Authorization': token})
         if(status.current.ok){
             console.log(response)
         }

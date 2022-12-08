@@ -4,6 +4,7 @@ import {
   RouterProvider,
   redirect,
 } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
@@ -20,7 +21,7 @@ function App() {
   const { post, status } = useFetch();
 
   const isNotLoggedLoader = async () => {
-    if (!user) {
+    if (!Cookies.get('auth')) {
       return redirect("/login");
     }
   };

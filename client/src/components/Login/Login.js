@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Cookies from 'js-cookie';
 
 import useFetch from "../../hooks/useFetch";
 import { UserContext } from "../../contexts/UserContext";
@@ -24,13 +25,14 @@ const Login = () => {
         const response = await post('/login', body, headers);
 
         if(status.current.ok){
-            setUser({username: username, token: response.token});
+            setUser({username: username});
+            Cookies.set('auth', response.token, {expires: 5, domain: 'localhost'});
         }
   
     }
 
     useEffect(() => {
-        if(user){
+        if(Cookies.get('auth')){
             return navigate('/');
         }
     }, [user])
