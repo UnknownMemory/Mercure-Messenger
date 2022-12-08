@@ -57,7 +57,7 @@ class ChatController extends AbstractController
         $room->setCreateur($this->getUser());
         $room->setParticipant($this->userRepository->find($idParticipant));
         $room->setLien("https://github.com/endroid/qr-code-bundle");
-        $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . uniqid());
+        $room->setNom("Room de " . $this->getUser()->getUsername() . " et " . $this->userRepository->find($idParticipant)->getUsername());
         $this->chatRepository->save($room, true);
 
         return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
