@@ -50,11 +50,12 @@ class ChatController extends AbstractController
 
 
     /* Créer une room */
-    #[Route('/creation', name: 'create_room', methods: ["GET", "POST"])]
-    public function creationRooms(): Response
+    #[Route('/creation/{idParticipant}', name: 'create_room', methods: ["GET", "POST"])]
+    public function creationRooms($idParticipant): Response
     {
         $room = new Chat();
         $room->setCreateur($this->getUser());
+        $room->setParticipant($this->userRepository->find($idParticipant));
         $room->setLien("https://github.com/endroid/qr-code-bundle");
         $room->setNom("Room-de-" . $this->getUser()->getUsername() . "-" . uniqid());
         $this->chatRepository->save($room, true);
