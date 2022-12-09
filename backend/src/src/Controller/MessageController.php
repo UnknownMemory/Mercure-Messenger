@@ -55,7 +55,7 @@ class MessageController extends AbstractController
             $message = new Message();
             $message->setChatId($chat);
             $message->setContenu($getMessage['messages']);
-            $message->setDatePubli(new \DateTime());
+            $message->setDatePubli(new \DateTime('now'));
             $message->setUser($this->getUser());
             $messagerepository->save($message, true);
 
