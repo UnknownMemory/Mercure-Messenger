@@ -52,10 +52,18 @@ class MessageController extends AbstractController
             $getMessage = json_decode($request->getContent(), true);
 
 
+            $message = new Message();
+            $message->setChatId($chat);
+            $message->setContenu($getMessage['messages']);
+            $message->setDatePubli(new \DateTime());
+            $message->setUser($this->getUser());
+            $messagerepository->save($message, true);
+
+            $user = $this->getUser();
             $update = new Update(
                 [
-                    "http://example.com/ping",
-                    "http://localhost:8000/api/chat/{$chat->getId()}/?topic=" . urlencode("http://example.com/ping"),
+                    "http://example.com/chat/{$chat->getId()}",
+                    "http://localhost:8000/api/user/{$user->getId()}/?topic=" . urlencode("http://example.com/chat/{$chat->getId()}"),
 
                 ],
                 json_encode([
@@ -67,12 +75,6 @@ class MessageController extends AbstractController
             );
             $hub->publish($update);
 
-            $message = new Message();
-            $message->setChatId($chat);
-            $message->setContenu($getMessage['messages']);
-            $message->setDatePubli(new \DateTime());
-            $message->setUser($this->getUser());
-            $messagerepository->save($message, true);
 
             return new JsonResponse('Message envoyé avec succès', Response::HTTP_OK, [], true);
         } else {
@@ -81,12 +83,13 @@ class MessageController extends AbstractController
     }
 
     #[Route('api/test', name: 'show-message', methods: 'GET')]
-    public function getAllMessages(MessageRepository $messageRepository, SerializerInterface $serializer, Request $request): JsonResponse {
+    public function getAllMessages(MessageRepository $messageRepository, SerializerInterface $serializer, Request $request): JsonResponse
+    {
         $page = $request->get('page', 1);
         $limite = $request->get('limite', 3);
         $messageList = $messageRepository->findAllWithPagination($page, $limite);
 
-        $jsonUserList = $serializer->serialize($messageList,'json',['groups' => 'getChat']);
+        $jsonUserList = $serializer->serialize($messageList, 'json', ['groups' => 'getChat']);
         return new JsonResponse($jsonUserList, Response::HTTP_OK, [], true);
     }
 }
