@@ -57,7 +57,15 @@ class MessageController extends AbstractController
             $message->setUser($this->getUser());
             $messagerepository->save($message, true);
 
-            $user = $this->getUser();
+
+            /* si l'user connecter = au créateur de la room  */
+            if ($this->getUser() === $chat->getCreateur()) {
+                /* On dit que $user est = au participant */
+                $user = $chat->getParticipant();
+            } else {
+                $user = $chat->getCreateur();
+            }
+
             $update = new Update(
                 [
                     "/chat/{$chat->getId()}",
