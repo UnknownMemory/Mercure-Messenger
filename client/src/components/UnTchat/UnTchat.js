@@ -47,7 +47,7 @@ const UnTchat = () => {
   useEffect(() => {
     getAllMessages();
     const url = new URL("http://localhost:9090/.well-known/mercure");
-    url.searchParams.append("topic", `http://example.com/chat/${id}`);
+    url.searchParams.append("topic", `/chat/${id}`);
 
     const eventSource = new EventSource(url, { withCredentials: true });
     eventSource.onmessage = handleMessage;

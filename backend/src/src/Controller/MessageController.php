@@ -60,15 +60,14 @@ class MessageController extends AbstractController
             $user = $this->getUser();
             $update = new Update(
                 [
-                    "http://example.com/chat/{$chat->getId()}",
-                    "http://localhost:1234/api/user/{$user->getId()}/?topic=" . urlencode("http://example.com/chat/{$chat->getId()}"),
+                    "/chat/{$chat->getId()}",
+                    "http://localhost:1234/user/{$user->getId()}/?topic=" . urlencode("/chat/{$chat->getId()}"),
 
                 ],
                 json_encode([
                     'id' => $this->getUser()->getId(),
                     'name' => $this->getUser()->getUserName(),
                     'messages' => $getMessage['messages'],
-
                 ]),
                 true
             );
