@@ -50,8 +50,6 @@ class MessageController extends AbstractController
 
         if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
             $getMessage = json_decode($request->getContent(), true);
-
-
             $message = new Message();
             $message->setChatId($chat);
             $message->setContenu($getMessage['messages']);
@@ -63,10 +61,11 @@ class MessageController extends AbstractController
             $update = new Update(
                 [
                     "http://example.com/chat/{$chat->getId()}",
-                    "http://localhost:8000/api/user/{$user->getId()}/?topic=" . urlencode("http://example.com/chat/{$chat->getId()}"),
+                    "http://localhost:1234/api/user/{$user->getId()}/?topic=" . urlencode("http://example.com/chat/{$chat->getId()}"),
 
                 ],
                 json_encode([
+                    'id' => $this->getUser()->getId(),
                     'name' => $this->getUser()->getUserName(),
                     'messages' => $getMessage['messages'],
 

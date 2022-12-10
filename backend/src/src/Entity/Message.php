@@ -14,6 +14,7 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getMessage"])]
     private ?int $id = null;
 
     /*   #[ORM\Column(type: Types::DATE_MUTABLE)]
