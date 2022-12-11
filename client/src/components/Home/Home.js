@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import useFetch from "../../hooks/useFetch";
 import Cookies from "js-cookie";
+import MesTchats from "../MesTchats/MesTchats";
 
 const Home = () => {
   const [usersList, setUsersList] = useState([]);
@@ -64,8 +65,9 @@ const Home = () => {
 
   return (
     <React.Fragment>
-      <div id="msg"></div>
-      {users}
+      <MesTchats>
+      <div id="msg">{users}</div>
+      </MesTchats>
     </React.Fragment>
   );
 };

@@ -44,8 +44,12 @@ const MesTchats = () => {
   return (
     <>
       <React.Fragment>
-        <h1 className="d-flex justify-content-center">Mes tchats</h1>
-        <ListGroup className="text-center">{chat}</ListGroup>
+      <div className="liste">
+        <h1 className="d-flex justify-content-start">Mes tchats</h1>
+        <ListGroup className="text-start">
+          {chat}
+        </ListGroup>
+      </div>
       </React.Fragment>
     </>
   );
