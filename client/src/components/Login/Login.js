@@ -39,7 +39,7 @@ const Login = () => {
     }, [user])
 
     return (
-        <React.Fragment>
+        <div>
             <h1 className="d-flex justify-content-center">Se connecter</h1>
             <Form onSubmit={onSubmit} id="formulaire">
                 <Form.Group className="mt-3">
@@ -54,9 +54,9 @@ const Login = () => {
                     <Button variant="primary" type="submit">Connexion</Button>
                 </div>
             </Form>
-            {error}
            <div className="d-flex justify-content-center h5">{isLoading && <Spinner/>}</div>
-        </React.Fragment>
+        </div>
+
     );
 }
 
