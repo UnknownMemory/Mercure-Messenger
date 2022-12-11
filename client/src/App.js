@@ -16,6 +16,7 @@ import { UserContext } from "./contexts/UserContext";
 import useFetch from "./hooks/useFetch";
 import AllTchats from "./components/AllTchats/AllTchats";
 import UnTchat from "./components/UnTchat/UnTchat";
+import ErrorPage from "./components/ErrorPage/ErrorPage"
 
 function App() {
   const [user, setUser] = useContext(UserContext);
@@ -32,6 +33,7 @@ function App() {
       path: "/",
       loader: isNotLoggedLoader,
       element: <Home />,
+      errorElement: <ErrorPage />
     },
     {
       path: "/register",
