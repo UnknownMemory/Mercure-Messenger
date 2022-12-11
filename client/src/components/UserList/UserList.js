@@ -9,7 +9,6 @@ import { useParams, useNavigate } from "react-router-dom";
 const UserList = () => {
   const [usersList, setUsersList] = useState([]);
   const { get, post, status } = useFetch();
-  const [user, setUser] = useContext(UserContext);
   const token = Cookies.get("auth");
   const { id } = useParams();
   const navigate = useNavigate();

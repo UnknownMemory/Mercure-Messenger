@@ -45,7 +45,7 @@ class MessageController extends AbstractController
     }
 
     #[Route('/{chat}/message', name: 'app_message_test', methods: ['POST'])]
-    public function indexTest(Chat $chat, HubInterface $hub, MessageRepository $messagerepository, Request $request): Response
+    public function indexTest(Chat $chat, HubInterface $hub, MessageRepository $messagerepository, Request $request, SerializerInterface $serializer): Response
     {
 
         if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
@@ -57,6 +57,7 @@ class MessageController extends AbstractController
             $message->setUser($this->getUser());
             $messagerepository->save($message, true);
 
+            $jsonMessage = $serializer->serialize($message, 'json', ['groups' => 'getMessage']);
 
             /* si l'user connecter = au créateur de la room  */
             if ($this->getUser() === $chat->getCreateur()) {
@@ -72,17 +73,13 @@ class MessageController extends AbstractController
                     "http://localhost:1234/user/{$user->getId()}/?topic=" . urlencode("/chat/{$chat->getId()}"),
 
                 ],
-                json_encode([
-                    'id' => $this->getUser()->getId(),
-                    'name' => $this->getUser()->getUserName(),
-                    'messages' => $getMessage['messages'],
-                ]),
+                $jsonMessage,
                 true
             );
             $hub->publish($update);
 
-
-            return new JsonResponse('Message envoyé avec succès', Response::HTTP_OK, [], true);
+          
+            return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
         } else {
             return new JsonResponse('Vous n\'avez pas accès à ce chat', Response::HTTP_FORBIDDEN, [], true);
         }

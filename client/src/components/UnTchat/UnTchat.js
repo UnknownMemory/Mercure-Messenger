@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import Cookies from "js-cookie";
 import {Col, Navbar, InputGroup, Button, Form, Card} from 'react-bootstrap';
@@ -7,40 +7,36 @@ import './UnTchat.css'
 import Message from "../Message/Message";
 
 const UnTchat = (props) => {
-  const [messageList, setMessage] = useState([]);
+  const [messageList, setMessageList] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const { get, status, post } = useFetch();
   const token = Cookies.get("auth");
+
+  const eventSource = useRef();
 
   const getAllMessages = async () => {
     const resMessages = await get(`/chat/${props.id}`, null, {
       Authorization: token,
     });
     if (status.current.ok) {
-      setMessage(resMessages);
+      setMessageList(resMessages.reverse());
     }
   };
 
   const postMessage = async (e) => {
     e.preventDefault();
-    const contenu = JSON.stringify({ messages: messageInput });
-    const res = await post(`/chat/${props.id}/message`, contenu, {
-      Authorization: token,
-    });
+    const msgJSON = JSON.stringify({ messages: messageInput });
+    const response = await post(`/chat/${props.id}/message`, msgJSON, {Authorization: token});
+
+    if(status.current.ok){
+      setMessageInput("");
+      setMessageList([...messageList, response]);
+    }
   };
 
-  const handleMessage = (e) => {
-    document
-      .querySelector("#lastMessage")
-      .insertAdjacentHTML(
-        "afterend",
-        '<div class="alert alert-success w-75 mx-auto">My names is James Bond !</div>'
-      );
-    window.setTimeout(() => {
-      const $alert = document.querySelector(".alert");
-      $alert.parentNode.removeChild($alert);
-    }, 2000);
-    console.log(JSON.parse(e.data));
+  const handleMessage = (event) => {
+    const message = event.data;
+    setMessageList([...messageList, JSON.parse(message)])
   };
 
   useEffect(() => {
@@ -48,22 +44,32 @@ const UnTchat = (props) => {
     const url = new URL("http://localhost:9090/.well-known/mercure");
     url.searchParams.append("topic", `/chat/${props.id}`);
 
-    const eventSource = new EventSource(url, { withCredentials: true });
-    eventSource.onmessage = handleMessage;
+    eventSource.current = new EventSource(url, { withCredentials: true });
 
     return () => {
-      eventSource.close();
+      eventSource.current.close();
     };
-  }, []);
+  }, [props.id]);
+
+
+  useEffect(() => {
+    if (!eventSource.current) {
+      return;
+    }
+
+    eventSource.current.onmessage = (event) => {
+      setMessageList([...messageList, JSON.parse(event.data)])
+    }
+  }, [messageList])
 
   const messages = messageList.map((message) => {
     return (
-      <Message message={message} />
+      <Message key={message.id} message={message} />
     );
   });
 
   return (
-    <Col md="10" xs="12" className="d-flex flex-column bg">
+    <Col md="10" xs="12" className="d-flex flex-column bg h-100">
       <Navbar className="justify-content-between align-items-center">
           <Navbar.Brand className="d-sm-block">Test</Navbar.Brand>
           <div className="d-block d-sm-none">
@@ -81,8 +87,8 @@ const UnTchat = (props) => {
         {messages}
       </div>
       <InputGroup className="p-3">
-        <Form.Control aria-label="Message" />
-        <Button bg="dark">Envoyer</Button>
+        <Form.Control type="text" aria-label="Message" value={messageInput} onChange={(e) => setMessageInput(e.currentTarget.value)}/>
+        <Button onClick={postMessage}>Envoyer</Button>
       </InputGroup>
     </Col>
   );

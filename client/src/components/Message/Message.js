@@ -15,7 +15,7 @@ const Message = (props) => {
             date.getMonth() === today.getMonth() &&
             date.getFullYear() === today.getFullYear()
         ) {
-            return `Today ${dateHour}`;
+            return `Aujourd'hui ${dateHour}`;
         } else {
             return date.toLocaleDateString(navigator.language);
         }
