@@ -1,20 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import ListGroup from "react-bootstrap/ListGroup";
 import useFetch from "../../hooks/useFetch";
-import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import {Col, Navbar, InputGroup, Button, Form, Card} from 'react-bootstrap';
 
-const UnTchat = () => {
-  const [message, setMessage] = useState([]);
+import './UnTchat.css'
+import Message from "../Message/Message";
+
+const UnTchat = (props) => {
+  const [messageList, setMessage] = useState([]);
   const [messageInput, setMessageInput] = useState("");
-  const { id } = useParams();
   const { get, status, post } = useFetch();
   const token = Cookies.get("auth");
 
   const getAllMessages = async () => {
-    const resMessages = await get(`/chat/${id}`, null, {
+    const resMessages = await get(`/chat/${props.id}`, null, {
       Authorization: token,
     });
     if (status.current.ok) {
@@ -25,7 +24,7 @@ const UnTchat = () => {
   const postMessage = async (e) => {
     e.preventDefault();
     const contenu = JSON.stringify({ messages: messageInput });
-    const res = await post(`/chat/${id}/message`, contenu, {
+    const res = await post(`/chat/${props.id}/message`, contenu, {
       Authorization: token,
     });
   };
@@ -47,7 +46,7 @@ const UnTchat = () => {
   useEffect(() => {
     getAllMessages();
     const url = new URL("http://localhost:9090/.well-known/mercure");
-    url.searchParams.append("topic", `/chat/${id}`);
+    url.searchParams.append("topic", `/chat/${props.id}`);
 
     const eventSource = new EventSource(url, { withCredentials: true });
     eventSource.onmessage = handleMessage;
@@ -57,34 +56,35 @@ const UnTchat = () => {
     };
   }, []);
 
-  const myMessages = message.map((message) => {
+  const messages = messageList.map((message) => {
     return (
-      <div key={message.id}>
-        {message.contenu} {message.user.username}
-      </div>
+      <Message message={message} />
     );
   });
 
   return (
-    <React.Fragment>
-      <h1 className="d-flex justify-content-center">coucou</h1>
-      <ListGroup className="text-center">{myMessages}</ListGroup>
-      <div id="lastMessage"></div>
-
-      <Form onSubmit={postMessage}>
-        <Form.Group className="mt-3">
-          <Form.Label>Message</Form.Label>
-          <Form.Control
-            type="text"
-            name="messages"
-            onChange={(e) => setMessageInput(e.currentTarget.value)}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Envoyer
-        </Button>
-      </Form>
-    </React.Fragment>
+    <Col md="10" xs="12" className="d-flex flex-column bg">
+      <Navbar className="justify-content-between align-items-center">
+          <Navbar.Brand className="d-sm-block">Test</Navbar.Brand>
+          <div className="d-block d-sm-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                  />
+              </svg>
+          </div>
+      </Navbar>
+      <div className="messages">
+        {messages}
+      </div>
+      <InputGroup className="p-3">
+        <Form.Control aria-label="Message" />
+        <Button bg="dark">Envoyer</Button>
+      </InputGroup>
+    </Col>
   );
 };
 

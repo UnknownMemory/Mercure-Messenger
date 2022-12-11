@@ -29,17 +29,13 @@ function App() {
 
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "/wetchat/:id",
       loader: isNotLoggedLoader,
       element: <Home />,
     },
     {
       path: "/register",
       element: <Register />,
-    },
-    {
-      path: "/tchat/:id",
-      element: <UnTchat />,
     },
     {
       path: "/login",

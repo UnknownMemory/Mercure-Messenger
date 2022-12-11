@@ -5,8 +5,12 @@ import Cookies from "js-cookie";
 import MesTchats from "../MesTchats/MesTchats";
 import UserList from "../UserList/UserList";
 import { Row } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import UnTchat from "../UnTchat/UnTchat";
 
 const Home = () => {
+  const { id } = useParams();
+
   const [usersList, setUsersList] = useState([]);
   const { get, post, status } = useFetch();
   const [user, setUser] = useContext(UserContext);
@@ -20,22 +24,11 @@ const Home = () => {
     }
   };
 
-  const handleClick = async (userId) => {
-    const response = await post(`/ping/${userId}`, null, {
-      Authorization: token,
-    });
-    if (status.current.ok) {
-      console.log(response);
+  const isId = () => {
+    if(id.isInteger() == id == 'home'){
+      return true
     }
-  };
-
-  const users = usersList.map((u) => {
-    return (
-      <div key={u.id} onClick={() => handleClick(u.id)}>
-        {u.username}
-      </div>
-    );
-  });
+  }
 
   useEffect(() => {
     getUsersList();
@@ -45,7 +38,7 @@ const Home = () => {
     <React.Fragment>
       <Row className="no-gutters h-100">
         <MesTchats/>
-        <UserList/>
+        {id == 'home' ? <UserList/> : <UnTchat id={id}/>}
       </Row>
     </React.Fragment>
   );

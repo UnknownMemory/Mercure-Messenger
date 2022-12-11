@@ -26,7 +26,7 @@ const MesTchats = () => {
   };
 
   const handleClick = async (idChat) => {
-    navigate(`/tchat/${idChat}`);
+    navigate(`/wetchat/${idChat}`);
   };
 
   useEffect(() => {
