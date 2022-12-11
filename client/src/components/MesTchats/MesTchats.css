@@ -6,20 +6,14 @@
     padding-left: initial;
 }
 .liste {
-    width: 16rem;
-    height: 100%;
     background-color: #2C2F33;
     display: block;
-    position: fixed;
 }
 
-.h1-color-white{
+h3 {
     color: white;
 }
 .text-start {
     color: white;
     cursor: pointer;
-}
-.container a {
-    /* margin-left: 0.2rem ; */
 }
