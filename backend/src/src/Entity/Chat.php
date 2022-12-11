@@ -16,7 +16,7 @@ class Chat
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getChat"])]
+    #[Groups(["getChat", "getExistTchat"])]
     private ?int $id = null;
 
     #[ORM\OneToMany(mappedBy: 'chatId', targetEntity: Message::class)]
