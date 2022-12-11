@@ -53,6 +53,14 @@ class ChatController extends AbstractController
     #[Route('/creation/{idParticipant}', name: 'create_room', methods: ["GET", "POST"])]
     public function creationRooms($idParticipant): Response
     {
+
+        /* Si un tchat existe déja avec 2 users peut importe leurs role (createur / participant) JSON */
+        if ($this->chatRepository->findChatWidthUser($this->getUser(), $idParticipant)) {
+            return new JsonResponse('Vous avez déjà une room avec cette personne', Response::HTTP_CONFLICT, [], true);
+        }
+
+
+        /* Sinon tu peux créer une nouvelle tchat room */
         $room = new Chat();
         $room->setCreateur($this->getUser());
         $room->setParticipant($this->userRepository->find($idParticipant));
@@ -63,31 +71,6 @@ class ChatController extends AbstractController
         return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
     }
 
-    /* Rejoindre une room */
-    #[Route('/{id}/join', name: 'join_room', methods: ['GET'])]
-    public function joinRoom(Chat $chat): JsonResponse
-    {
-        if ($this->getUser() === $chat->getCreateur()) {
-            return new JsonResponse('Vous ne pouvez pas rejoindre votre propre chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
-        } else {
-            $chat->setParticipant($this->getUser());
-            $this->chatRepository->save($chat, true);
-            return new JsonResponse('Vous avez rejoint la chatRoom avec succès', Response::HTTP_OK, [], true);
-        }
-    }
-
-    /* Quitter une room */
-    #[Route('/{id}/leave', name: 'leave_room', methods: ['GET'])]
-    public function leaveRoom(Chat $chat): JsonResponse
-    {
-        if ($this->getUser() === $chat->getCreateur()) {
-            return new JsonResponse('Vous ne pouvez pas quitter votre propre chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
-        } else {
-            $chat->setParticipant(null);
-            $this->chatRepository->save($chat, true);
-            return new JsonResponse('Vous avez quitté la chatRoom avec succès', Response::HTTP_OK, [], true);
-        }
-    }
 
     /* Afficher une room */
     #[Route('/{id}', name: 'one_room', methods: ['GET'])]
@@ -97,9 +80,8 @@ class ChatController extends AbstractController
 
             $page = $request->get('page', 1);
             $limite = $request->get('limite', 3);
-          
-    
-            $jsonMessage = $serializer->serialize($messageRepository->findAllMessageByChatId($chat->getId(),$page, $limite), 'json', ['groups' => 'getMessage']);
+
+            $jsonMessage = $serializer->serialize($messageRepository->findAllMessageByChatId($chat->getId(), $page, $limite), 'json', ['groups' => 'getMessage']);
             return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
         } else {
             return new JsonResponse('Vous n\'avez pas accès à cette chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
