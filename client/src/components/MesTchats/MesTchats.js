@@ -45,7 +45,7 @@ const MesTchats = () => {
     <>
       <React.Fragment>
       <div className="liste">
-        <h1 className="d-flex justify-content-start">Mes tchats</h1>
+        <h1 className="d-flex justify-content-start h1-color-white">Mes tchats</h1>
         <ListGroup className="text-start">
           {chat}
         </ListGroup>
