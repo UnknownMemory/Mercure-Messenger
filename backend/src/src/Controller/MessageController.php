@@ -45,48 +45,54 @@ class MessageController extends AbstractController
     }
 
     #[Route('/{chat}/message', name: 'app_message_test', methods: ['POST'])]
-    public function indexTest(Chat $chat, HubInterface $hub, MessageRepository $messagerepository, Request $request): Response
+    public function indexTest(Chat $chat, HubInterface $hub, MessageRepository $messagerepository, Request $request, SerializerInterface $serializer): Response
     {
 
         if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
             $getMessage = json_decode($request->getContent(), true);
+            $message = new Message();
+            $message->setChatId($chat);
+            $message->setContenu($getMessage['messages']);
+            $message->setDatePubli(new \DateTime('now'));
+            $message->setUser($this->getUser());
+            $messagerepository->save($message, true);
 
+            $jsonMessage = $serializer->serialize($message, 'json', ['groups' => 'getMessage']);
+
+            /* si l'user connecter = au créateur de la room  */
+            if ($this->getUser() === $chat->getCreateur()) {
+                /* On dit que $user est = au participant */
+                $user = $chat->getParticipant();
+            } else {
+                $user = $chat->getCreateur();
+            }
 
             $update = new Update(
                 [
-                    "http://example.com/ping",
-                    "http://localhost:8000/api/chat/{$chat->getId()}/?topic=" . urlencode("http://example.com/ping"),
+                    "/chat/{$chat->getId()}",
+                    "http://localhost:1234/user/{$user->getId()}/?topic=" . urlencode("/chat/{$chat->getId()}"),
 
                 ],
-                json_encode([
-                    'name' => $this->getUser()->getUserName(),
-                    'messages' => $getMessage['messages'],
-
-                ]),
+                $jsonMessage,
                 true
             );
             $hub->publish($update);
 
-            $message = new Message();
-            $message->setChatId($chat);
-            $message->setContenu($getMessage['messages']);
-            $message->setDatePubli(new \DateTime());
-            $message->setUser($this->getUser());
-            $messagerepository->save($message, true);
-
-            return new JsonResponse('Message envoyé avec succès', Response::HTTP_OK, [], true);
+          
+            return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
         } else {
             return new JsonResponse('Vous n\'avez pas accès à ce chat', Response::HTTP_FORBIDDEN, [], true);
         }
     }
 
     #[Route('api/test', name: 'show-message', methods: 'GET')]
-    public function getAllMessages(MessageRepository $messageRepository, SerializerInterface $serializer, Request $request): JsonResponse {
+    public function getAllMessages(MessageRepository $messageRepository, SerializerInterface $serializer, Request $request): JsonResponse
+    {
         $page = $request->get('page', 1);
         $limite = $request->get('limite', 3);
         $messageList = $messageRepository->findAllWithPagination($page, $limite);
 
-        $jsonUserList = $serializer->serialize($messageList,'json',['groups' => 'getChat']);
+        $jsonUserList = $serializer->serialize($messageList, 'json', ['groups' => 'getChat']);
         return new JsonResponse($jsonUserList, Response::HTTP_OK, [], true);
     }
 }

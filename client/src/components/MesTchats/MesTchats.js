@@ -2,21 +2,32 @@ import React, { useContext, useEffect, useState } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import useFetch from "../../hooks/useFetch";
 import { UserContext } from "../../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
 import "./MesTchats.css";
+import { Col } from "react-bootstrap";
+import UserInfo from "../UserInfo/UserInfo";
 
 const MesTchats = () => {
   const [Chatnom, setChatNom] = useState([]);
   const { get, status } = useFetch();
   const [user, setUser] = useContext(UserContext);
+  const token = Cookies.get("auth");
+  const navigate = useNavigate();
 
   const getMyChat = async () => {
     const res = await get("/chat/mes-chats", null, {
-      Authorization: user.token,
+      Authorization: token,
     });
+
     if (status.current.ok) {
-      console.log(res);
       setChatNom(res);
     }
+  };
+
+  const handleClick = async (idChat) => {
+    navigate(`/wetchat/${idChat}`);
   };
 
   useEffect(() => {
@@ -24,15 +35,22 @@ const MesTchats = () => {
   }, []);
 
   const chat = Chatnom.map((nameTchat) => {
-    return <div key={nameTchat.id}>{nameTchat.nom}</div>;
+    return (
+      <div onClick={() => handleClick(nameTchat.id)} key={nameTchat.id}>
+        {nameTchat.nom}
+      </div>
+    );
   });
 
   return (
     <>
-      <React.Fragment>
-        <h1 className="d-flex justify-content-center">Mes tchats</h1>
-        <ListGroup className="text-center">{chat}</ListGroup>
-      </React.Fragment>
+      <Col md="2" xs="9" className="liste h-100">
+        <h3 className="d-flex justify-content-start ml-1">Conversations</h3>
+        <ListGroup className="d-flex text-start">
+          {chat}
+        </ListGroup>
+        <UserInfo/>
+      </Col>
     </>
   );
 };

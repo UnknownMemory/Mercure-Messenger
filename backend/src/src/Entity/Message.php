@@ -14,9 +14,14 @@ class Message
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getMessage"])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    /*   #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["getMessage"])]
+    private ?\DateTimeInterface $datePubli = null; */
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["getMessage"])]
     private ?\DateTimeInterface $datePubli = null;
 

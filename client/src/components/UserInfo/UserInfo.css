@@ -1,0 +1,10 @@
+.user-profile {
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    padding: 12px;
+}
+
+.username {
+    flex-grow: 1;
+}
