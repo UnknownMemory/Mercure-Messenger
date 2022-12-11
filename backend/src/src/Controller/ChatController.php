@@ -51,12 +51,15 @@ class ChatController extends AbstractController
 
     /* Créer une room */
     #[Route('/creation/{idParticipant}', name: 'create_room', methods: ["GET", "POST"])]
-    public function creationRooms($idParticipant): Response
+    public function creationRooms($idParticipant, SerializerInterface $serializer): Response
     {
 
-        /* Si un tchat existe déja avec 2 users peut importe leurs role (createur / participant) JSON */
-        if ($this->chatRepository->findChatWidthUser($this->getUser(), $idParticipant)) {
-            return new JsonResponse('Vous avez déjà une room avec cette personne', Response::HTTP_CONFLICT, [], true);
+        /* Si un tchat existe déja avec 2 users peut importe leurs role (createur / participant) on envoie l'id du tchat qui existe déja */
+        $chatExist = $this->chatRepository->findChatWidthUser($this->getUser(), $idParticipant);
+        if ($chatExist) {
+
+            $jsonChatExist = $serializer->serialize(['error' => $chatExist], 'json', ['groups' => 'getExistTchat']);
+            return new JsonResponse($jsonChatExist, Response::HTTP_NOT_FOUND, [], true);
         }
 
 
@@ -68,7 +71,8 @@ class ChatController extends AbstractController
         $room->setNom("Room de " . $this->getUser()->getUsername() . " et " . $this->userRepository->find($idParticipant)->getUsername());
         $this->chatRepository->save($room, true);
 
-        return new JsonResponse('ChatRoom créer avec succès', Response::HTTP_OK, [], true);
+        $jsonRoom = $serializer->serialize($room->getId(), 'json');
+        return new JsonResponse($jsonRoom, Response::HTTP_OK, [], true);
     }
 
 
