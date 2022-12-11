@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import useFetch from "../../hooks/useFetch";
 import { UserContext } from "../../contexts/UserContext";
 import "./Login.css"
+import Spinner from 'react-bootstrap/Spinner';
 
 
 const Login = () => {
@@ -15,7 +16,7 @@ const Login = () => {
     const [user, setUser] = useContext(UserContext)
     const navigate = useNavigate();
 
-    const {post, status} = useFetch()
+    const {post, status, error, isLoading} = useFetch()
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -38,7 +39,7 @@ const Login = () => {
     }, [user])
 
     return (
-        <React.Fragment>
+        <div>
             <h1 className="d-flex justify-content-center">Se connecter</h1>
             <Form onSubmit={onSubmit} id="formulaire">
                 <Form.Group className="mt-3">
@@ -53,7 +54,9 @@ const Login = () => {
                     <Button variant="primary" type="submit">Connexion</Button>
                 </div>
             </Form>
-        </React.Fragment>
+           <div className="d-flex justify-content-center h5">{isLoading && <Spinner/>}</div>
+        </div>
+
     );
 }
 

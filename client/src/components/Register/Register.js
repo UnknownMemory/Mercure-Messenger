@@ -22,7 +22,7 @@ const Register = () => {
 
     return (
         <React.Fragment>
-            <h1 className="d-flex justify-content-center">Inscription</h1>
+            <h1 className="d-flex justify-content-center ">Inscription</h1>
             <Form onSubmit={onSubmit} id="formulaire">
                 <Form.Group className="mt-3">
                     <Form.Label>Nom</Form.Label>
