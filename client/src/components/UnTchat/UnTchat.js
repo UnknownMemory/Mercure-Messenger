@@ -1,90 +1,102 @@
-import React, { useContext, useEffect, useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import ListGroup from "react-bootstrap/ListGroup";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
-import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import {Col, Navbar, InputGroup, Button, Form, Card} from 'react-bootstrap';
 
-const UnTchat = () => {
-  const [message, setMessage] = useState([]);
+import './UnTchat.css'
+import Message from "../Message/Message";
+
+const UnTchat = (props) => {
+  const [room, setRoom] = useState([]);
+  const [messageList, setMessageList] = useState([]);
   const [messageInput, setMessageInput] = useState("");
-  const { id } = useParams();
   const { get, status, post } = useFetch();
   const token = Cookies.get("auth");
 
+  const eventSource = useRef();
+
   const getAllMessages = async () => {
-    const resMessages = await get(`/chat/${id}`, null, {
+    const resMessages = await get(`/chat/${props.id}`, null, {
       Authorization: token,
     });
     if (status.current.ok) {
-      setMessage(resMessages);
+      setMessageList(resMessages.reverse());
+    }
+  };
+
+  const getRoom = async () => {
+    const res = await get(`/chat/${props.id}/info`, null, {
+      Authorization: token,
+    });
+    if (status.current.ok) {
+      setRoom(res);
     }
   };
 
   const postMessage = async (e) => {
     e.preventDefault();
-    const contenu = JSON.stringify({ messages: messageInput });
-    const res = await post(`/chat/${id}/message`, contenu, {
-      Authorization: token,
-    });
-  };
+    const msgJSON = JSON.stringify({ messages: messageInput });
+    const response = await post(`/chat/${props.id}/message`, msgJSON, {Authorization: token});
 
-  const handleMessage = (e) => {
-    document
-      .querySelector("#lastMessage")
-      .insertAdjacentHTML(
-        "afterend",
-        '<div class="alert alert-success w-75 mx-auto">My names is James Bond !</div>'
-      );
-    window.setTimeout(() => {
-      const $alert = document.querySelector(".alert");
-      $alert.parentNode.removeChild($alert);
-    }, 2000);
-    console.log(JSON.parse(e.data));
+    if(status.current.ok){
+      setMessageInput("");
+      setMessageList([...messageList, response]);
+    }
   };
 
   useEffect(() => {
     getAllMessages();
+    getRoom();
     const url = new URL("http://localhost:9090/.well-known/mercure");
-    url.searchParams.append("topic", `/chat/${id}`);
+    url.searchParams.append("topic", `/chat/${props.id}`);
 
-    const eventSource = new EventSource(url, { withCredentials: true });
-    eventSource.onmessage = handleMessage;
+    eventSource.current = new EventSource(url, { withCredentials: true });
 
     return () => {
-      eventSource.close();
+      eventSource.current.close();
     };
-  }, []);
+  }, [props.id]);
 
-  const myMessages = message.map((message) => {
+
+  useEffect(() => {
+    if (!eventSource.current) {
+      return;
+    }
+
+    eventSource.current.onmessage = (event) => {
+      setMessageList([...messageList, JSON.parse(event.data)])
+    }
+  }, [messageList])
+
+  const messages = messageList.map((message) => {
     return (
-      <div key={message.id}>
-        {message.contenu} {message.user.username}
-      </div>
+      <Message key={message.id} message={message} />
     );
   });
 
   return (
-    <React.Fragment>
-      <h1 className="d-flex justify-content-center">coucou</h1>
-      <ListGroup className="text-center">{myMessages}</ListGroup>
-      <div id="lastMessage"></div>
-
-      <Form onSubmit={postMessage}>
-        <Form.Group className="mt-3">
-          <Form.Label>Message</Form.Label>
-          <Form.Control
-            type="text"
-            name="messages"
-            onChange={(e) => setMessageInput(e.currentTarget.value)}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Envoyer
-        </Button>
-      </Form>
-    </React.Fragment>
+    <Col md="10" xs="12" className="d-flex flex-column bg h-100">
+      <Navbar className="justify-content-between align-items-center">
+          <Navbar.Brand className="d-sm-block">{room.nom}</Navbar.Brand>
+          <div className="d-block d-sm-none">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                  />
+              </svg>
+          </div>
+      </Navbar>
+      <div className="messages">
+        {messages}
+      </div>
+      <InputGroup className="p-3">
+        <Form.Control type="text" aria-label="Message" value={messageInput} onChange={(e) => setMessageInput(e.currentTarget.value)}/>
+        <Button onClick={postMessage}>Envoyer</Button>
+      </InputGroup>
+    </Col>
   );
 };
 

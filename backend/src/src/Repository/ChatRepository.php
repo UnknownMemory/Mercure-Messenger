@@ -58,6 +58,23 @@ class ChatRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findChatWidthUser(User $user, $idParticipant)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.participant = :user')
+            ->andWhere('c.createur = :user2')
+            ->orWhere('c.participant = :user2')
+            ->andWhere('c.createur = :user')
+            ->setParameter('user', $user)
+            ->setParameter('user2', $idParticipant)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
+
 
 
     //    /**

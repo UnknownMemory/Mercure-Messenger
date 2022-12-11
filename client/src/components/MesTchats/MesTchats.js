@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import "./MesTchats.css";
+import { Col } from "react-bootstrap";
+import UserInfo from "../UserInfo/UserInfo";
 
 const MesTchats = () => {
   const [Chatnom, setChatNom] = useState([]);
@@ -18,15 +20,14 @@ const MesTchats = () => {
     const res = await get("/chat/mes-chats", null, {
       Authorization: token,
     });
-    console.log(token);
+
     if (status.current.ok) {
-      console.log(res);
       setChatNom(res);
     }
   };
 
   const handleClick = async (idChat) => {
-    navigate(`/tchat/${idChat}`);
+    navigate(`/wetchat/${idChat}`);
   };
 
   useEffect(() => {
@@ -43,10 +44,13 @@ const MesTchats = () => {
 
   return (
     <>
-      <React.Fragment>
-        <h1 className="d-flex justify-content-center">Mes tchats</h1>
-        <ListGroup className="text-center">{chat}</ListGroup>
-      </React.Fragment>
+      <Col md="2" xs="9" className="liste h-100">
+        <h3 className="d-flex justify-content-start ml-1">Conversations</h3>
+        <ListGroup className="d-flex text-start">
+          {chat}
+        </ListGroup>
+        <UserInfo/>
+      </Col>
     </>
   );
 };
