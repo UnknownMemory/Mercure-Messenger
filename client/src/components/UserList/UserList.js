@@ -28,11 +28,11 @@ const UserList = () => {
     });
 
     if (response.error) {
-      navigate(`/tchat/${response.error[0].id}`);
+      navigate(`/wetchat/${response.error[0].id}`);
     }
 
     if (status.current.ok) {
-      navigate(`/tchat/${response}`);
+      navigate(`/wetchat/${response}`);
     }
   };
 
