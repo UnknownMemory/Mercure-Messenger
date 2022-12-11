@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 
 import "./MesTchats.css";
 import { Col } from "react-bootstrap";
+import UserInfo from "../UserInfo/UserInfo";
 
 const MesTchats = () => {
   const [Chatnom, setChatNom] = useState([]);
@@ -45,9 +46,10 @@ const MesTchats = () => {
     <>
       <Col md="2" xs="9" className="liste h-100">
         <h3 className="d-flex justify-content-start ml-1">Conversations</h3>
-        <ListGroup className="d-flex justify-content-center text-start">
+        <ListGroup className="d-flex text-start">
           {chat}
         </ListGroup>
+        <UserInfo/>
       </Col>
     </>
   );
