@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import "./MesTchats.css";
+import { Col } from "react-bootstrap";
 
 const MesTchats = () => {
   const [Chatnom, setChatNom] = useState([]);
@@ -18,9 +19,8 @@ const MesTchats = () => {
     const res = await get("/chat/mes-chats", null, {
       Authorization: token,
     });
-    console.log(token);
+
     if (status.current.ok) {
-      console.log(res);
       setChatNom(res);
     }
   };
@@ -43,14 +43,12 @@ const MesTchats = () => {
 
   return (
     <>
-      <React.Fragment>
-      <div className="liste">
-        <h1 className="d-flex justify-content-start">Mes tchats</h1>
-        <ListGroup className="text-start">
+      <Col md="2" xs="9" className="liste h-100">
+        <h3 className="d-flex justify-content-start ml-1">Conversations</h3>
+        <ListGroup className="d-flex justify-content-center text-start">
           {chat}
         </ListGroup>
-      </div>
-      </React.Fragment>
+      </Col>
     </>
   );
 };

@@ -11,7 +11,7 @@ import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Container>
+  <Container className="h-100">
     <UserProvider>
       <App />
     </UserProvider>

@@ -3,10 +3,9 @@ import { UserContext } from "../../contexts/UserContext";
 import useFetch from "../../hooks/useFetch";
 import Cookies from "js-cookie";
 import MesTchats from "../MesTchats/MesTchats";
-import UserList from "../UserList/UserList";
-import { Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 
-const Home = () => {
+const UserList = () => {
   const [usersList, setUsersList] = useState([]);
   const { get, post, status } = useFetch();
   const [user, setUser] = useContext(UserContext);
@@ -17,15 +16,6 @@ const Home = () => {
 
     if (status.current.ok) {
       setUsersList(res.users);
-    }
-  };
-
-  const handleClick = async (userId) => {
-    const response = await post(`/ping/${userId}`, null, {
-      Authorization: token,
-    });
-    if (status.current.ok) {
-      console.log(response);
     }
   };
 
@@ -42,13 +32,11 @@ const Home = () => {
   }, []);
 
   return (
-    <React.Fragment>
-      <Row className="no-gutters h-100">
-        <MesTchats/>
-        <UserList/>
-      </Row>
-    </React.Fragment>
+    <Col md="10" xs="12" className="bg">
+        <h3>Liste des utilisateurs</h3>
+        <div id="msg">{users}</div>
+    </Col>
   );
 };
 
-export default Home;
+export default UserList;

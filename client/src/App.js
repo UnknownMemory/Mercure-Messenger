@@ -6,8 +6,6 @@ import {
 } from "react-router-dom";
 import Cookies from "js-cookie";
 
-import Header from "./components/Header/Header";
-
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import MesTchats from "./components/MesTchats/MesTchats";
@@ -59,7 +57,6 @@ function App() {
 
   return (
     <>
-      <Header />
       <RouterProvider router={router} />
     </>
   );
