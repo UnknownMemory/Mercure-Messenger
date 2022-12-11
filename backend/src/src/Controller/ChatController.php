@@ -77,6 +77,17 @@ class ChatController extends AbstractController
 
 
     /* Afficher une room */
+    #[Route('/{id}/info', name: 'room_info', methods: ['GET'])]
+    public function chatInfo(Chat $chat, SerializerInterface $serializer, Request $request): JsonResponse
+    {
+        if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
+            $jsonMessage = $serializer->serialize($chat, 'json',  ['groups' => 'getChat']);
+            return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
+        } else {
+            return new JsonResponse('Vous n\'avez pas accès à cette chatRoom', Response::HTTP_UNAUTHORIZED, [], true);
+        }
+    }
+
     #[Route('/{id}', name: 'one_room', methods: ['GET'])]
     public function oneRoom(Chat $chat, MessageRepository $messageRepository, SerializerInterface $serializer, Request $request): JsonResponse
     {

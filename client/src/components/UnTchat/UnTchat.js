@@ -7,6 +7,7 @@ import './UnTchat.css'
 import Message from "../Message/Message";
 
 const UnTchat = (props) => {
+  const [room, setRoom] = useState([]);
   const [messageList, setMessageList] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const { get, status, post } = useFetch();
@@ -23,6 +24,15 @@ const UnTchat = (props) => {
     }
   };
 
+  const getRoom = async () => {
+    const res = await get(`/chat/${props.id}/info`, null, {
+      Authorization: token,
+    });
+    if (status.current.ok) {
+      setRoom(res);
+    }
+  };
+
   const postMessage = async (e) => {
     e.preventDefault();
     const msgJSON = JSON.stringify({ messages: messageInput });
@@ -34,13 +44,9 @@ const UnTchat = (props) => {
     }
   };
 
-  const handleMessage = (event) => {
-    const message = event.data;
-    setMessageList([...messageList, JSON.parse(message)])
-  };
-
   useEffect(() => {
     getAllMessages();
+    getRoom();
     const url = new URL("http://localhost:9090/.well-known/mercure");
     url.searchParams.append("topic", `/chat/${props.id}`);
 
@@ -71,7 +77,7 @@ const UnTchat = (props) => {
   return (
     <Col md="10" xs="12" className="d-flex flex-column bg h-100">
       <Navbar className="justify-content-between align-items-center">
-          <Navbar.Brand className="d-sm-block">Test</Navbar.Brand>
+          <Navbar.Brand className="d-sm-block">{room.nom}</Navbar.Brand>
           <div className="d-block d-sm-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
