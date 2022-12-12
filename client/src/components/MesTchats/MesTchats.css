@@ -5,6 +5,7 @@
     left: 0;
     padding-left: initial;
 }
+
 .liste {
     background-color: #2C2F33;
     display: flex;
@@ -12,14 +13,25 @@
     padding: 0 0 0 15px;
 }
 
-.liste .list-group {
+.list-top {
+    margin-left: 1em;
     flex-grow: 1;
-}
+}   
 
-h3 {
-    color: white;
-}
 .text-start {
     color: white;
     cursor: pointer;
+}
+
+.list-link {
+    text-decoration: none;
+    color: #8c8c8c;
+}
+
+.list-link:hover {
+    color: #fff;
+}
+
+.list-group {
+    margin-top: 1em;
 }

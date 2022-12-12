@@ -81,7 +81,7 @@ const UnTchat = (props) => {
   return (
     <Col md="10" xs="12" className="d-flex flex-column bg h-100">
       <Navbar className="justify-content-between align-items-center">
-          <Navbar.Brand className="d-sm-block">{room.nom}</Navbar.Brand>
+          <Navbar.Brand className="d-sm-block px-3">{room.nom}</Navbar.Brand>
           <div className="d-block d-sm-none">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
