@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import MesTchats from "../MesTchats/MesTchats";
 import { Col } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 const UserList = () => {
   const [usersList, setUsersList] = useState([]);
@@ -12,6 +13,8 @@ const UserList = () => {
   const token = Cookies.get("auth");
   const { id } = useParams();
   const navigate = useNavigate();
+  
+  useDocumentTitle('WeTchat - Liste des utilisateurs');
 
   const getUsersList = async () => {
     const res = await get("/users", null, { Authorization: token });

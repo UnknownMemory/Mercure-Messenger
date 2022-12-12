@@ -8,6 +8,7 @@ import useFetch from "../../hooks/useFetch";
 import { UserContext } from "../../contexts/UserContext";
 import "./Login.css"
 import Spinner from 'react-bootstrap/Spinner';
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 
 const Login = () => {
@@ -31,6 +32,8 @@ const Login = () => {
         }
   
     }
+
+    useDocumentTitle('WeTchat - Connexion');
 
     useEffect(() => {
         if(Cookies.get('auth')){

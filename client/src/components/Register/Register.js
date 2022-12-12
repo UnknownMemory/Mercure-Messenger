@@ -4,12 +4,15 @@ import Button from 'react-bootstrap/Button';
 
 import useFetch from "../../hooks/useFetch";
 import "./register.css"
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 const Register = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
     const {post, status} = useFetch();
+
+    useDocumentTitle('WeTchat - Inscription');
 
     const onSubmit = async (e) => {
         e.preventDefault();

@@ -5,6 +5,7 @@ import {Col, Navbar, InputGroup, Button, Form, Card} from 'react-bootstrap';
 
 import './UnTchat.css'
 import Message from "../Message/Message";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 const UnTchat = (props) => {
   const [room, setRoom] = useState([]);
@@ -44,9 +45,12 @@ const UnTchat = (props) => {
     }
   };
 
+  useDocumentTitle(`WeTchat - ${room.nom}`);
+
   useEffect(() => {
     getAllMessages();
     getRoom();
+
     const url = new URL("http://localhost:9090/.well-known/mercure");
     url.searchParams.append("topic", `/chat/${props.id}`);
 
