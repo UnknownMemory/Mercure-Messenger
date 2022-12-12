@@ -94,7 +94,7 @@ class ChatController extends AbstractController
         if ($this->getUser() === $chat->getCreateur() || $this->getUser() === $chat->getParticipant()) {
 
             $page = $request->get('page', 1);
-            $limite = $request->get('limite', 3);
+            $limite = $request->get('limite', 10);
 
             $jsonMessage = $serializer->serialize($messageRepository->findAllMessageByChatId($chat->getId(), $page, $limite), 'json', ['groups' => 'getMessage']);
             return new JsonResponse($jsonMessage, Response::HTTP_OK, [], true);
