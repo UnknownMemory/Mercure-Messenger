@@ -3,7 +3,7 @@ import { UserContext } from "../../contexts/UserContext";
 import useFetch from "../../hooks/useFetch";
 import Cookies from "js-cookie";
 import MesTchats from "../MesTchats/MesTchats";
-import { Col } from "react-bootstrap";
+import { Col, Navbar } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 
@@ -52,7 +52,9 @@ const UserList = () => {
 
   return (
     <Col md="10" xs="12" className="bg">
-      <h3>Liste des utilisateurs</h3>
+      <Navbar>
+        <Navbar.Brand className="d-sm-block">Liste des utilisateurs</Navbar.Brand>
+      </Navbar>
       <div id="msg">{users}</div>
     </Col>
   );
