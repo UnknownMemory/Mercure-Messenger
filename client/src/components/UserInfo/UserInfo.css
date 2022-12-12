@@ -8,3 +8,8 @@
 .username {
     flex-grow: 1;
 }
+
+.taille {
+    height: 60%;
+    width: 22%;
+}
