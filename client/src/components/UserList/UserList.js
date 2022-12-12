@@ -7,6 +7,8 @@ import { Col, Navbar } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 
+import "./UserList.css";
+
 const UserList = () => {
   const [usersList, setUsersList] = useState([]);
   const { get, post, status } = useFetch();
@@ -51,9 +53,9 @@ const UserList = () => {
   }, []);
 
   return (
-    <Col md="10" xs="12" className="bg">
+    <Col md="10" xs="12" className="bg p-0">
       <Navbar>
-        <Navbar.Brand className="d-sm-block">Liste des utilisateurs</Navbar.Brand>
+        <Navbar.Brand className="d-sm-block px-3">Liste des utilisateurs</Navbar.Brand>
       </Navbar>
       <div id="msg">{users}</div>
     </Col>

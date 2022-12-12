@@ -45,10 +45,10 @@ const MesTchats = () => {
   return (
     <>
       <Col md="2" xs="9" className="liste h-100">
+        <Navbar>
+          <Navbar.Brand className="d-sm-block px-3">Conversations</Navbar.Brand>
+        </Navbar>
         <div className="list-top">
-          <Navbar>
-              <Navbar.Brand className="d-sm-block">Conversations</Navbar.Brand>
-          </Navbar>
           <Link to="/wetchat/home" className="list-link">Listes des utilisateurs</Link>
           <ListGroup className="d-flex text-start">
             {chat}

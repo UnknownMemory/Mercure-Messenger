@@ -3,9 +3,14 @@
     overflow-y: auto;
 }
 
+.navbar {
+    border-bottom: solid 1px #808080;
+}
+
 .navbar-brand {
     font-weight: 700;
     color: #fff;
+
 }
 
 .navbar-brand:hover {
